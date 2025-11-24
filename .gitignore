@@ -1,0 +1,16 @@
+# Ignore submissions directory
+submissions/
+# ignore test jsons and zip files
+test jsons/
+*.zip
+# ignore logs logs/
+logs.txt
+# igone all png except logo.png, on_success.gif, on_failure.gif in source folder
+source/*.png
+!source/logo.png
+!source/on_success.gif
+!source/on_failure.gif
+
+# ignore all gifs and pngs in root folder
+/*.png
+/*.gif

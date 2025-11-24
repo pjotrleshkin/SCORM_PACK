@@ -1,0 +1,24 @@
+{
+    "config": {
+        "MAX_ATTEMPTS": "The maximum number of times a user is allowed to attempt the quiz. Set to 0 for unlimited (if supported by logic, otherwise usually 999).",
+        "PASS_PERCENTAGE": "The minimum percentage score required to pass the assessment (0-100).",
+        "DISPLAY_NEEDED_POINTS": "If enabled, shows the points value next to each question and calculates points needed to pass on the result screen.",
+        "DISPLAY_ATTEMPTS_COUNTER": "If enabled, displays the current attempt number (e.g., 'Attempt 1 of 3') to the user.",
+        "COMMIT_ATTEMPT_ON_START": "If enabled, the attempt is counted as soon as the quiz starts. If disabled, it counts only when finished."
+    },
+    "media": {
+        "logo": "Upload a logo image to be displayed at the top of the quiz interface. The filename will be saved in the JSON.",
+        "success": "Image or GIF displayed when the user passes the quiz.",
+        "failure": "Image or GIF displayed when the user fails the quiz."
+    },
+    "question": {
+        "type": "The format of the question. 'Description' is for informational text only (no points).",
+        "points": "The number of points awarded for answering this question correctly.",
+        "penalty": "Points deducted for each incorrect option selected (only for Multiple Choice).",
+        "question": "The main text of the question or the content for Description types.",
+        "options": "List of possible answers. Enter each option on a new line.",
+        "correct": "The correct answer(s). For Single/Boolean, it must match one option exactly. For Multiple, separate matches with commas.",
+        "confirmLabel": "Text for the confirmation checkbox (e.g., 'I agree'). Only for Description type.",
+        "blockNext": "If checked, the user cannot proceed to the next question until they check the confirmation box."
+    }
+}

@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PH Assessment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        .quiz-container {
+            max-width: 66%;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 0 20px;
+            /* Add padding for small screens */
+        }
+
+        .logo-img {
+            max-width: 100%;
+            /* Ensure it scales down */
+            height: auto;
+            max-height: 200px;
+            /* Limit max height on large screens */
+            display: inline-block;
+        }
+
+        fieldset {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        }
+
+        legend {
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-card {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-card:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        .option-card.selected {
+            background-color: #e7f1ff;
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        .description-box {
+            background-color: #e9ecef;
+            border-left: 5px solid #0d6efd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .inline-select {
+            display: inline-block;
+            width: auto;
+            min-width: 150px;
+            margin: 0 5px;
+            font-weight: bold;
+            border-color: #0d6efd;
+        }
+
+        .points-badge {
+            font-size: 0.85rem;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+
+        /* Welcome Screen Styles */
+        .welcome-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Result Screen Styles */
+        .score-percentage {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #0d6efd;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-gif {
+            max-width: 100%;
+            height: auto;
+            max-height: 500px;
+            /* Limit height as requested */
+            object-fit: contain;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #loading-screen {
+            text-align: center;
+            padding: 50px;
+        }
+
+        #quiz-title {
+            margin-bottom: 0.5rem !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container quiz-container">
+
+        <div class="logo-container">
+            <img src="logo.png" alt="Company Logo" class="logo-img">
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Loading Assessment Data...</p>
+        </div>
+
+        <div id="lock-screen" class="text-center d-none">
+            <div class="alert alert-danger p-5">
+                <h3>Access Denied</h3>
+                <p class="lead">You have reached the maximum number of attempts for this assessment.</p>
+                <div class="stat-box">
+                    <h5>Final Recorded Score</h5>
+                    <h2 id="lock-score-display">--</h2>
+                </div>
+                <hr>
+                <p>Please contact your administrator.</p>
+            </div>
+        </div>
+
+        <div id="welcome-screen" class="d-none">
+            <div class="welcome-card">
+                <h2 class="mb-3">Welcome Back</h2>
+                <p class="text-muted">You have previously attempted this assessment.</p>
+
+                <div class="stat-box row">
+                    <div class="col-6 border-end">
+                        <small class="text-muted d-block text-uppercase fw-bold">Last Attempt Score</small>
+                        <span class="h3 text-primary" id="welcome-last-score">--</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block text-uppercase fw-bold">Attempts Used</small>
+                        <span class="h3 text-dark" id="welcome-attempts">0</span> <span class="text-muted">/ 3</span>
+                    </div>
+                </div>
+
+                <p class="mb-4">Would you like to try again to improve your score?</p>
+
+                <button class="btn btn-primary btn-lg px-5" onclick="startNewAttempt()">Start New Attempt</button>
+            </div>
+        </div>
+
+        <div id="quiz-interface" class="d-none">
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-end mb-1">
+                    <div>
+                        <h4 class="mb-0" id="quiz-title"></h4>
+                        <span class="badge bg-secondary mt-1" id="attempt-badge">Loading...</span>
+                    </div>
+                    <div class="text-end">
+                        <span class="text-muted small" id="page-counter">Loading...</span>
+                        <span class="points-badge" id="points-display"></span>
+                    </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar" id="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <form id="quiz-form">
+                <fieldset id="question-fieldset">
+                    <legend id="question-text"></legend>
+                    <p id="helper-text" class="text-muted small fst-italic mb-3"></p>
+
+                    <div id="input-container" class="mb-4">
+                    </div>
+
+                    <div id="validation-msg" class="alert alert-warning d-none mt-2"></div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="button" class="btn btn-outline-secondary" id="prev-btn" disabled>Back</button>
+                        <div>
+                            <button type="button" class="btn btn-primary px-4" id="next-btn">Next Question</button>
+                            <button type="submit" class="btn btn-success px-4 d-none" id="submit-btn">Finish
+                                Quiz</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+
+            <div id="result-area" class="text-center mt-5 d-none">
+                <div class="mb-4">
+                    <!-- 1. Percentage Display -->
+                    <div class="score-percentage" id="final-percentage">0%</div>
+
+                    <!-- 2. Points Info -->
+                    <p class="lead mb-1">
+                        Score: <span class="fw-bold" id="final-score-badge">0 / 0</span> Points
+                    </p>
+                    <p class="small text-muted mb-3" id="score-message">Assessment Complete</p>
+
+                    <!-- 3. Result GIF -->
+                    <img id="result-gif" class="result-gif" src="" alt="Result Animation">
+
+                    <p class="small text-muted mt-2" id="pass-fail-message">Results will be sent to the LMS upon closing
+                        the window.</p>
+                </div>
+
+                <!-- Debug Output (Hidden from UI, visible in Console) -->
+                <div class="d-none">
+                    <pre id="json-output"></pre>
+                </div>
+
+                <button id="restart-btn" class="btn btn-outline-primary mt-3 disabled">Assessment Finished - Close
+                    Window to Exit</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var scorm = (function () {
+            var api = null;
+
+            function findAPI(win) {
+                var attempt = 0;
+                while ((win.API == null) && (win.parent != null) && (win.parent != win)) {
+                    attempt++;
+                    if (attempt > 7) return null;
+                    win = win.parent;
+                }
+                return win.API;
+            }
+
+            function getAPI() {
+                if (api == null) {
+                    api = findAPI(window);
+                    if ((api == null) && (window.opener != null) && (typeof (window.opener) != "undefined")) {
+                        api = findAPI(window.opener);
+                    }
+                }
+                return api;
+            }
+
+            return {
+                init: function () {
+                    var API = getAPI();
+                    if (API) { API.LMSInitialize(""); }
+                },
+                getSuspendData: function () {
+                    var API = getAPI();
+                    return API ? API.LMSGetValue("cmi.suspend_data") : "";
+                },
+                setSuspendData: function (data) {
+                    var API = getAPI();
+                    if (API) { API.LMSSetValue("cmi.suspend_data", data); }
+                },
+                setScore: function (score, max) {
+                    var API = getAPI();
+                    if (API) {
+                        API.LMSSetValue("cmi.core.score.raw", score);
+                        API.LMSSetValue("cmi.core.score.min", "0");
+                        API.LMSSetValue("cmi.core.score.max", max);
+                    }
+                },
+                setStatus: function (status) {
+                    var API = getAPI();
+                    if (API) { API.LMSSetValue("cmi.core.lesson_status", status); }
+                },
+                getStatus: function () {
+                    var API = getAPI();
+                    return API ? API.LMSGetValue("cmi.core.lesson_status") : "";
+                },
+                save: function () {
+                    var API = getAPI();
+                    if (API) { API.LMSCommit(""); }
+                },
+                // Modified finish() to set exit status
+                finish: function () {
+                    var API = getAPI();
+                    if (API) {
+                        API.LMSSetValue("cmi.core.exit", "logout"); // Indicate intentional exit
+                        API.LMSCommit("");
+                        API.LMSFinish("");
+                    }
+                }
+            };
+        })();
+    </script>
+
+    <script>
+        // --- GLOBAL VARIABLES (Populated from JSON) ---
+        let MAX_ATTEMPTS = 5;
+        let PASS_PERCENTAGE = 80;
+        let DISPLAY_NEEDED_POINTS = true;
+        let COMMIT_ATTEMPT_ON_START = false;
+        let questions = [];
+
+        // --- STATE ---
+        let currentIndex = 0;
+        let userAnswers = {}; // Changed to let to allow reset
+        let storedData = { attempts: 0, lastScore: 0 }; // Holds SCORM data
+
+        // --- ELEMENTS ---
+        const questionText = document.getElementById('question-text');
+        const helperText = document.getElementById('helper-text');
+        const inputContainer = document.getElementById('input-container');
+        const validationMsg = document.getElementById('validation-msg');
+        const progressBar = document.getElementById('progress-bar');
+        const pageCounter = document.getElementById('page-counter');
+        const pointsDisplay = document.getElementById('points-display');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultArea = document.getElementById('result-area');
+        const loadingScreen = document.getElementById('loading-screen');
+
+        // --- INITIALIZATION ---
+
+        async function init() {
+            // 1. Initialize SCORM
+            scorm.init();
+
+            // 2. Fetch Quiz Data
+            try {
+                const response = await fetch('quiz_data.json');
+                if (!response.ok) throw new Error("Failed to load quiz data");
+                const data = await response.json();
+
+                // Apply Config
+                if (data.config) {
+                    MAX_ATTEMPTS = data.config.MAX_ATTEMPTS ?? 3;
+                    PASS_PERCENTAGE = data.config.PASS_PERCENTAGE ?? 80;
+                    DISPLAY_NEEDED_POINTS = data.config.DISPLAY_NEEDED_POINTS ?? true;
+                    COMMIT_ATTEMPT_ON_START = data.config.COMMIT_ATTEMPT_ON_START ?? false;
+                    DISPLAY_ATTEMPTS_COUNTER = data.config.DISPLAY_ATTEMPTS_COUNTER ?? true;
+                    TITLE = data.config.TITLE ?? "Test Quiz";
+                }
+
+                // Load Questions
+                questions = data.questions || [];
+
+                // Hide Loading
+                loadingScreen.classList.add('d-none');
+
+                // Proceed with Logic
+                checkUserStatus();
+
+                // set title
+                document.title = TITLE;
+                document.getElementById('quiz-title').textContent = TITLE;
+
+                // hide points display if needed
+                if (!DISPLAY_NEEDED_POINTS) {
+                    console.log('DISPLAY_NEEDED_POINTS is false');
+                    document.getElementById('points-display').style.display = 'none';
+                    console.log('brb');
+                }
+                // hide attempt display if needed
+                if (!DISPLAY_ATTEMPTS_COUNTER) {
+                    console.log('DISPLAY_ATTEMPTS_COUNTER is false');
+                    document.getElementById('attempt-badge').style.display = 'none';
+                }
+                else {
+                    console.log('DISPLAY_ATTEMPTS_COUNTER is true');
+                    if (MAX_ATTEMPTS == 999) {
+                        document.getElementById('attempt-badge').textContent = 'No attempts limit';
+                    }
+                }
+
+            } catch (error) {
+                console.error("Error initializing quiz:", error);
+                loadingScreen.innerHTML = `<div class="alert alert-danger">Error loading assessment data. Please contact support.<br><small>${error.message}</small></div>`;
+            }
+        }
+
+        function checkUserStatus() {
+            // 3. Retrieve Data from LMS
+            let storedString = scorm.getSuspendData();
+
+            if (storedString && storedString !== "") {
+                try {
+                    storedData = JSON.parse(storedString);
+                } catch (e) {
+                    console.error("Error parsing suspend_data", e);
+                    storedData = { attempts: 0, lastScore: 0 };
+                }
+            } else {
+                storedData = { attempts: 0, lastScore: 0 };
+            }
+
+            // 4. DECISION: New User or Returning User?
+            const status = scorm.getStatus();
+
+            if (status === 'passed' || status === 'completed') {
+                // Case D: Already Completed -> Show Warning
+                showAlreadyCompletedScreen();
+            }
+            else if (storedData.attempts >= MAX_ATTEMPTS) {
+                // Case A: Max Attempts Reached -> Show Lock Screen
+                showLockScreen();
+            }
+            else if (storedData.attempts > 0) {
+                // Case B: Returning User -> Show Welcome Back Screen
+                showWelcomeScreen();
+            }
+            else {
+                // Case C: First Time User -> Start immediately
+                startNewAttempt();
+            }
+        }
+
+        // --- SCREEN FLOW LOGIC ---
+
+        function showLockScreen() {
+            document.getElementById('lock-screen').classList.remove('d-none');
+            document.getElementById('lock-score-display').textContent = storedData.lastScore || "0";
+            scorm.setStatus("failed");
+            // REMOVED scorm.finish() here to keep window open
+        }
+
+        function showWelcomeScreen() {
+            document.getElementById('welcome-screen').classList.remove('d-none');
+
+            // Populate stats
+            document.getElementById('welcome-last-score').textContent = storedData.lastScore || "0";
+            document.getElementById('welcome-attempts').textContent = storedData.attempts;
+        }
+
+        function showAlreadyCompletedScreen() {
+            document.getElementById('welcome-screen').classList.remove('d-none');
+            document.querySelector('#welcome-screen h2').textContent = "Assessment Completed";
+            document.querySelector('#welcome-screen .text-muted').textContent = "You have already successfully completed this assessment.";
+
+            const content = `
+            <div class="alert alert-success">
+                <h4>You are all set!</h4>
+                <p>You have already passed this assessment. Do you really want to take it again?</p>
+            </div>
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <button class="btn btn-secondary" onclick="window.close()">No, Close Window</button>
+                <button class="btn btn-primary" onclick="startNewAttempt()">Yes, Retake</button>
+            </div>
+        `;
+
+            // Replace the standard welcome content with our warning
+            const card = document.querySelector('.welcome-card');
+            // Keep the header but replace the body
+            const header = card.querySelector('h2').outerHTML + card.querySelector('p').outerHTML;
+            card.innerHTML = header + content;
+        }
+
+        // Called by the button on Welcome Screen OR automatically if first time
+        window.startNewAttempt = function () {
+            // Hide welcome screen if visible
+            document.getElementById('welcome-screen').classList.add('d-none');
+
+            // Reset UI for new attempt
+            document.getElementById('question-fieldset').classList.remove('d-none');
+            document.querySelector('.mb-4').classList.remove('d-none');
+            resultArea.classList.add('d-none');
+
+            // Reset Answers
+            userAnswers = {};
+
+            // 1. Handle Attempt Counting
+            if (COMMIT_ATTEMPT_ON_START) {
+                storedData.attempts += 1;
+
+            }
+
+            // 2. Set Status to Incomplete immediately
+            scorm.setStatus("incomplete");
+
+            // 3. Save specific "Start" state to SCORM immediately
+            scorm.setSuspendData(JSON.stringify(storedData));
+            scorm.save();
+
+            // 4. Show Quiz Interface
+            document.getElementById('quiz-interface').classList.remove('d-none');
+
+            // Update Badge
+            // If we commit on start, storedData.attempts is current.
+            // If we commit on finish, storedData.attempts is previous, so current is +1.
+            if (MAX_ATTEMPTS < 999) {
+                const currentAttemptNum = COMMIT_ATTEMPT_ON_START ? storedData.attempts : (storedData.attempts + 1);
+                document.getElementById('attempt-badge').textContent = `Attempt ${currentAttemptNum} of ${MAX_ATTEMPTS}`;
+            }
+            else {
+                document.getElementById('attempt-badge').textContent = `No attempts limit`;
+            }
+
+            // 5. Load Data
+            // questions is already loaded from JSON
+            currentIndex = 0;
+            loadQuestion(currentIndex);
+        }
+
+        // --- QUIZ LOGIC (Standard) ---
+
+        function loadQuestion(index) {
+            const q = questions[index];
+
+            inputContainer.innerHTML = '';
+            helperText.textContent = '';
+            validationMsg.classList.add('d-none');
+            questionText.textContent = q.question;
+
+            let pointText = `(${q.points} pt${q.points !== 1 ? 's' : ''})`;
+            if (q.type === 'multiple' && q.penalty) pointText = `(${q.points} pts | -${q.penalty} penalty)`;
+            pointsDisplay.textContent = pointText;
+
+            switch (q.type) {
+                case 'description': renderDescription(q); break;
+                case 'single':
+                case 'boolean': renderSingleChoice(q); break;
+                case 'multiple': renderMultipleChoice(q); break;
+                case 'text': renderTextInput(q); break;
+                case 'fill-blank': renderFillBlank(q); break;
+            }
+            updateProgress(index);
+        }
+
+        function renderDescription(q) {
+            const savedVal = userAnswers[q.id];
+            const isChecked = savedVal === 'confirmed';
+            const html = `
+        <div class="description-box">${q.content}</div>
+        <div class="option-card ${isChecked ? 'selected' : ''}" onclick="toggleCheckbox(this)">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="desc-confirm" ${isChecked ? 'checked' : ''}>
+                <label class="form-check-label fw-bold" for="desc-confirm">${q.confirmLabel || "I confirm"}</label>
+            </div>
+        </div>`;
+            inputContainer.innerHTML = html;
+        }
+
+        function renderSingleChoice(q) {
+            q.options.forEach((opt, i) => {
+                const isChecked = userAnswers[q.id] === opt;
+                const activeClass = isChecked ? 'selected' : '';
+                const html = `
+            <div class="option-card ${activeClass}" onclick="selectRadio(this)">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ans" id="opt-${i}" value="${opt}" ${isChecked ? 'checked' : ''}>
+                    <label class="form-check-label w-100" for="opt-${i}">${opt}</label>
+                </div>
+            </div>`;
+                inputContainer.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function renderMultipleChoice(q) {
+            helperText.textContent = "Select all that apply.";
+            const savedAns = userAnswers[q.id] || [];
+            q.options.forEach((opt, i) => {
+                const isChecked = savedAns.includes(opt);
+                const activeClass = isChecked ? 'selected' : '';
+                const html = `
+            <div class="option-card ${activeClass}" onclick="toggleCheckbox(this)">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="ans" id="opt-${i}" value="${opt}" ${isChecked ? 'checked' : ''}>
+                    <label class="form-check-label w-100" for="opt-${i}">${opt}</label>
+                </div>
+            </div>`;
+                inputContainer.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function renderTextInput(q) {
+            const val = userAnswers[q.id] || '';
+            inputContainer.innerHTML = `<input type="text" class="form-control form-control-lg" id="text-input" placeholder="Type answer..." value="${val}">`;
+        }
+
+        function renderFillBlank(q) {
+            const savedVal = userAnswers[q.id] || '';
+            let optionsHtml = `<option value="" disabled ${savedVal === '' ? 'selected' : ''}>Choose...</option>`;
+            q.options.forEach(opt => {
+                const isSel = savedVal === opt ? 'selected' : '';
+                optionsHtml += `<option value="${opt}" ${isSel}>${opt}</option>`;
+            });
+            const selectHtml = `<select class="form-select inline-select" id="blank-select">${optionsHtml}</select>`;
+            const parts = q.question.split('{{BLANK}}');
+            if (parts.length > 1) questionText.innerHTML = parts[0] + selectHtml + parts[1];
+            else inputContainer.innerHTML = selectHtml;
+        }
+
+        // --- INTERACTION HELPERS ---
+        window.selectRadio = function (div) {
+            div.querySelector('input').checked = true;
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            div.classList.add('selected');
+        }
+        window.toggleCheckbox = function (div) {
+            if (event.target.type === 'checkbox') return;
+            if (event.target.tagName === 'LABEL') return;
+            const input = div.querySelector('input');
+            input.checked = !input.checked;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        document.addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox' && e.target.closest('.option-card')) {
+                const div = e.target.closest('.option-card');
+                e.target.checked ? div.classList.add('selected') : div.classList.remove('selected');
+            }
+        });
+
+        function updateProgress(index) {
+            pageCounter.textContent = `Question ${index + 1} of ${questions.length}`;
+            const pct = ((index + 1) / questions.length) * 100;
+            progressBar.style.width = `${pct}%`;
+            prevBtn.disabled = index === 0;
+            if (index === questions.length - 1) {
+                nextBtn.classList.add('d-none');
+                submitBtn.classList.remove('d-none');
+            } else {
+                nextBtn.classList.remove('d-none');
+                submitBtn.classList.add('d-none');
+            }
+        }
+
+        function saveCurrentAnswer() {
+            const q = questions[currentIndex];
+            if (q.type === 'description') {
+                const el = document.getElementById('desc-confirm');
+                userAnswers[q.id] = el && el.checked ? 'confirmed' : null;
+            }
+            else if (q.type === 'single' || q.type === 'boolean') {
+                const el = document.querySelector('input[name="ans"]:checked');
+                if (el) userAnswers[q.id] = el.value;
+            }
+            else if (q.type === 'multiple') {
+                const els = document.querySelectorAll('input[name="ans"]:checked');
+                userAnswers[q.id] = Array.from(els).map(e => e.value);
+            }
+            else if (q.type === 'text') {
+                const el = document.getElementById('text-input');
+                if (el) userAnswers[q.id] = el.value;
+            }
+            else if (q.type === 'fill-blank') {
+                const el = document.getElementById('blank-select');
+                if (el) userAnswers[q.id] = el.value;
+            }
+        }
+
+        function validateAndProceed() {
+            saveCurrentAnswer();
+            const q = questions[currentIndex];
+            if (q.type === 'description' && q.blockNext) {
+                if (userAnswers[q.id] !== 'confirmed') {
+                    validationMsg.textContent = "You must confirm/agree to proceed.";
+                    validationMsg.classList.remove('d-none');
+                    return;
+                }
+            }
+            if (currentIndex < questions.length - 1) {
+                currentIndex++;
+                loadQuestion(currentIndex);
+            }
+        }
+
+        nextBtn.addEventListener('click', validateAndProceed);
+
+        prevBtn.addEventListener('click', () => {
+            saveCurrentAnswer();
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadQuestion(currentIndex);
+            }
+        });
+
+        // --- SCORING ENGINE ---
+        function calculateTotalScore() {
+            let totalScore = 0;
+            let maxPossibleScore = 0;
+            let details = [];
+
+            questions.forEach(q => {
+                maxPossibleScore += q.points;
+                const uAns = userAnswers[q.id];
+                let qScore = 0;
+
+                if (uAns) {
+                    if (q.type === 'description') {
+                        if (uAns === 'confirmed') qScore = q.points;
+                    }
+                    else if (q.type === 'text') {
+                        const cleanUser = uAns.trim().toLowerCase();
+                        if (Array.isArray(q.correctAnswer)) {
+                            if (q.correctAnswer.some(c => c.toLowerCase() === cleanUser)) qScore = q.points;
+                        } else {
+                            if (cleanUser === q.correctAnswer.toLowerCase()) qScore = q.points;
+                        }
+                    }
+                    else if (['single', 'boolean', 'fill-blank'].includes(q.type)) {
+                        if (uAns === q.correctAnswer) qScore = q.points;
+                    }
+                    else if (q.type === 'multiple') {
+                        let tempScore = 0;
+                        const valPerCorrect = q.points / q.correctAnswer.length;
+                        uAns.forEach(ans => {
+                            if (q.correctAnswer.includes(ans)) tempScore += valPerCorrect;
+                            else tempScore -= (q.penalty || 0);
+                        });
+                        if (tempScore < 0) tempScore = 0;
+                        qScore = tempScore;
+                    }
+                }
+
+                totalScore += qScore;
+                details.push({
+                    id: q.id,
+                    text: q.question,
+                    type: q.type,
+                    pointsEarned: Math.round(qScore * 100) / 100,
+                    maxPoints: q.points
+                });
+            });
+
+            return {
+                score: Math.round(totalScore * 100) / 100,
+                max: maxPossibleScore,
+                details: details
+            };
+        }
+
+        // --- FINAL SUBMISSION ---
+        document.getElementById('quiz-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const indexBefore = currentIndex;
+            validateAndProceed();
+            if (!validationMsg.classList.contains('d-none')) return;
+            if (currentIndex !== indexBefore) return;
+
+            const result = calculateTotalScore();
+
+            // 1. Handle Late Attempt Counting
+            if (!COMMIT_ATTEMPT_ON_START) {
+                storedData.attempts += 1;
+            }
+
+            // 2. SAVE HISTORY TO SCORM (suspend_data)
+            storedData.lastScore = result.score;
+            scorm.setSuspendData(JSON.stringify(storedData));
+
+            // 3. SEND STANDARD SCORM DATA
+            scorm.setScore(result.score, result.max);
+
+            const percentage = (result.score / result.max) * 100;
+            const status = percentage >= PASS_PERCENTAGE ? "passed" : "failed";
+            scorm.setStatus(status);
+
+            // 4. COMMIT (DO NOT FINISH!)
+            scorm.save();
+
+            // UI Update
+            document.getElementById('question-fieldset').classList.add('d-none');
+            document.querySelector('.mb-4').classList.add('d-none');
+
+            resultArea.classList.remove('d-none');
+
+            // --- NEW: DISPLAY LOGIC ---
+            document.getElementById('final-percentage').textContent = Math.round(percentage) + "%";
+            document.getElementById('final-score-badge').textContent = `${result.score} / ${result.max}`;
+
+            // --- NEW: GIF LOGIC ---
+            const resultGif = document.getElementById('result-gif');
+            if (status === 'passed') {
+                resultGif.src = "on_success.gif";
+            } else {
+                resultGif.src = "on_failure.gif";
+            }
+
+            let message = status === 'passed' ? "Congratulations! You Passed." : "Attempt Recorded. You did not meet the passing score.";
+
+            if (DISPLAY_NEEDED_POINTS) {
+                const pointsNeeded = (result.max * PASS_PERCENTAGE) / 100;
+                message += ` (Points needed to pass: ${pointsNeeded})`;
+            }
+
+            document.getElementById('score-message').textContent = message;
+
+            const rBtn = document.getElementById('restart-btn');
+
+            if (status === 'passed') {
+                // PASSED: Show Close Window
+                rBtn.classList.remove('disabled');
+                rBtn.textContent = "Assessment Passed - Click to Close";
+                rBtn.setAttribute('onclick', 'window.close()');
+            } else {
+                // FAILED
+                if (storedData.attempts >= MAX_ATTEMPTS) {
+                    // Max Attempts Reached
+                    rBtn.classList.add('disabled');
+                    rBtn.textContent = "Maximum Attempts Used - Close Window to Exit";
+                    rBtn.removeAttribute('onclick');
+                } else {
+                    // Retry Available
+                    rBtn.classList.remove('disabled');
+                    rBtn.textContent = "Retry / Reattempt";
+                    rBtn.setAttribute('onclick', 'startNewAttempt()');
+                }
+            }
+
+            const output = {
+                config: {
+                    MAX_ATTEMPTS,
+                    DISPLAY_ATTEMPTS_COUNTER,
+                    PASS_PERCENTAGE,
+                    DISPLAY_NEEDED_POINTS,
+                    COMMIT_ATTEMPT_ON_START
+                },
+                scormStatus: status,
+                attemptsUsed: storedData.attempts,
+                answers: userAnswers,
+                score: result.score,
+                maxScore: result.max,
+                details: result.details
+            };
+            document.getElementById('json-output').textContent = JSON.stringify(output, null, 2);
+            console.log("SCORM Debug Output:", output);
+        });
+
+        // --- SCORM EXIT HANDLER ---
+
+        /**
+         * Executes a final SCORM Finish/Exit command when the user closes the window or navigates away.
+         * This is the safest way to ensure data is recorded without forcing an immediate window close
+         * upon quiz submission.
+         */
+        window.addEventListener('unload', function (event) {
+            // We call finish if the content has initialized (meaning scorm.init() ran)
+            // and we haven't already hit max attempts (which calls scorm.finish() immediately).
+            if (questions.length > 0 || storedData.attempts > 0) {
+                scorm.finish();
+            }
+        });
+
+        init();
+
+    </script>
+</body>
+
+</html>
