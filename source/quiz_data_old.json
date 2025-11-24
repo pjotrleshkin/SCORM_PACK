@@ -1,0 +1,121 @@
+{
+  "config": {
+    "TITLE": "Safety & Compliance Quiz",
+    "MAX_ATTEMPTS": 999,
+    "DISPLAY_ATTEMPTS_COUNTER": true,
+    "PASS_PERCENTAGE": 80,
+    "DISPLAY_NEEDED_POINTS": true,
+    "COMMIT_ATTEMPT_ON_START": false,
+    "MEDIA": {
+      "logo": "failure_3.gif",
+      "success": "on_success.gif",
+      "failure": "on_failure.gif"
+    }
+  },
+  "questions": [
+    {
+      "id": 0,
+      "type": "description",
+      "points": 0,
+      "question": "This assessment contains proprietary information. By proceeding, you agree not to share these questions or answers with colleagues. Failure to comply may result in disciplinary action.",
+      "content": "This assessment contains proprietary information. By proceeding, you agree not to share these questions or answers with colleagues. Failure to comply may result in disciplinary action.",
+      "confirmLabel": "I have read and agree to the terms.",
+      "blockNext": true
+    },
+    {
+      "id": 1,
+      "type": "boolean",
+      "points": 1,
+      "question": "is inline css good practice?",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": "False"
+    },
+    {
+      "id": 2,
+      "type": "single",
+      "points": 1,
+      "question": "What implies that a variable cannot be reassigned in JavaScript?",
+      "options": [
+        "var",
+        "let",
+        "const",
+        "function"
+      ],
+      "correctAnswer": "const"
+    },
+    {
+      "id": 3,
+      "type": "multiple",
+      "points": 1,
+      "question": "Which of the following are valid HTTP methods?",
+      "options": [
+        "GET",
+        "POST",
+        "JUMP",
+        "DELETE",
+        "STOP"
+      ],
+      "correctAnswer": [
+        "GET",
+        "POST",
+        "DELETE"
+      ],
+      "penalty": 0.33
+    },
+    {
+      "id": 4,
+      "type": "boolean",
+      "points": 1,
+      "question": "HTML is a programming language.",
+      "options": [
+        "True",
+        "False"
+      ],
+      "correctAnswer": "False"
+    },
+    {
+      "id": 5,
+      "type": "text",
+      "points": 5,
+      "question": "Type a keyword used to return a value from a function.",
+      "options": [],
+      "correctAnswer": [
+        "return",
+        "yield"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "fill-blank",
+      "points": 3,
+      "question": "The {{BLANK}} tag is used to define a hyperlink.",
+      "options": [
+        "&lt;link&gt;",
+        "&lt;a&gt;",
+        "&lt;href&gt;"
+      ],
+      "correctAnswer": "<a>"
+    },
+    {
+      "id": 7,
+      "type": "drag-drop-text",
+      "points": 5,
+      "question": "The {{1}} is the largest planet in our solar system, while {{2}} is known as the Red Planet.",
+      "options": [
+        "Jupiter",
+        "Jupiter",
+        "Mars",
+        "Earth",
+        "Venus",
+        "Saturn"
+      ],
+      "correctAnswer": {
+        "1": "Jupiter",
+        "2": "Mars"
+      }
+    }
+  ]
+}

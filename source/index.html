@@ -203,12 +203,26 @@
             padding: 0;
             cursor: pointer;
         }
+
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: auto;
+            min-width: 120px;
+            z-index: 1000;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="container quiz-container">
+    <div class="container quiz-container position-relative">
+        <div class="language-selector">
+            <select id="lang-select" class="form-select form-select-sm" onchange="setLanguage(this.value)"
+                style="display:none;">
+            </select>
+        </div>
 
         <div class="logo-container">
             <img src="logo.png" alt="Company Logo" class="logo-img">
@@ -402,6 +416,10 @@
         let DISPLAY_NEEDED_POINTS = true;
         let COMMIT_ATTEMPT_ON_START = false;
         let questions = [];
+        let supportedLanguages = ['en'];
+        let currentLanguage = 'en';
+        let defaultLanguage = 'en';
+        let TITLE_OBJ = {};
 
         // --- STATE ---
         let currentIndex = 0;
@@ -441,7 +459,28 @@
                     DISPLAY_NEEDED_POINTS = data.config.DISPLAY_NEEDED_POINTS ?? true;
                     COMMIT_ATTEMPT_ON_START = data.config.COMMIT_ATTEMPT_ON_START ?? false;
                     DISPLAY_ATTEMPTS_COUNTER = data.config.DISPLAY_ATTEMPTS_COUNTER ?? true;
-                    TITLE = data.config.TITLE ?? "Test Quiz";
+                    TITLE_OBJ = data.config.TITLE || { en: "Test Quiz" };
+
+                    if (data.config.languages) supportedLanguages = data.config.languages;
+                    if (data.config.defaultLanguage) defaultLanguage = data.config.defaultLanguage;
+                }
+
+                // Determine Language
+                const urlParams = new URLSearchParams(window.location.search);
+                const langParam = urlParams.get('lang');
+                if (langParam && supportedLanguages.includes(langParam)) {
+                    currentLanguage = langParam;
+                } else {
+                    currentLanguage = defaultLanguage;
+                }
+
+                // Setup Language Selector
+                const langSelect = document.getElementById('lang-select');
+                if (supportedLanguages.length > 1) {
+                    langSelect.style.display = 'block';
+                    langSelect.innerHTML = supportedLanguages.map(lang =>
+                        `<option value="${lang}" ${lang === currentLanguage ? 'selected' : ''}>${lang.toUpperCase()}</option>`
+                    ).join('');
                 }
 
                 // Load Questions
@@ -454,22 +493,17 @@
                 checkUserStatus();
 
                 // set title
-                document.title = TITLE;
-                document.getElementById('quiz-title').textContent = TITLE;
+                updateTitle();
 
                 // hide points display if needed
                 if (!DISPLAY_NEEDED_POINTS) {
-                    console.log('DISPLAY_NEEDED_POINTS is false');
                     document.getElementById('points-display').style.display = 'none';
-                    console.log('brb');
                 }
                 // hide attempt display if needed
                 if (!DISPLAY_ATTEMPTS_COUNTER) {
-                    console.log('DISPLAY_ATTEMPTS_COUNTER is false');
                     document.getElementById('attempt-badge').style.display = 'none';
                 }
                 else {
-                    console.log('DISPLAY_ATTEMPTS_COUNTER is true');
                     if (MAX_ATTEMPTS == 999) {
                         document.getElementById('attempt-badge').textContent = 'No attempts limit';
                     }
@@ -557,6 +591,28 @@
             card.innerHTML = header + content;
         }
 
+        // --- LANGUAGE LOGIC ---
+        function getText(obj) {
+            if (typeof obj === 'string') return obj;
+            if (!obj) return "";
+            return obj[currentLanguage] || obj[defaultLanguage] || Object.values(obj)[0] || "";
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            updateTitle();
+            // Re-render current question if visible
+            if (!document.getElementById('quiz-interface').classList.contains('d-none')) {
+                loadQuestion(currentIndex);
+            }
+        }
+
+        function updateTitle() {
+            const title = getText(TITLE_OBJ);
+            document.title = title;
+            document.getElementById('quiz-title').textContent = title;
+        }
+
         // Called by the button on Welcome Screen OR automatically if first time
         window.startNewAttempt = function () {
             // Hide welcome screen if visible
@@ -611,7 +667,7 @@
             inputContainer.innerHTML = '';
             helperText.textContent = '';
             validationMsg.classList.add('d-none');
-            questionText.textContent = q.question;
+            questionText.textContent = getText(q.question);
 
             let pointText = `(${q.points} pt${q.points !== 1 ? 's' : ''})`;
             if (q.type === 'multiple' && q.penalty) pointText = `(${q.points} pts | -${q.penalty} penalty)`;
@@ -633,11 +689,11 @@
             const savedVal = userAnswers[q.id];
             const isChecked = savedVal === 'confirmed';
             const html = `
-        <div class="description-box">${q.content}</div>
+        <div class="description-box">${getText(q.content)}</div>
         <div class="option-card ${isChecked ? 'selected' : ''}" onclick="toggleCheckbox(this)">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="desc-confirm" ${isChecked ? 'checked' : ''}>
-                <label class="form-check-label fw-bold" for="desc-confirm">${q.confirmLabel || "I confirm"}</label>
+                <label class="form-check-label fw-bold" for="desc-confirm">${getText(q.confirmLabel) || "I confirm"}</label>
             </div>
         </div>`;
             inputContainer.innerHTML = html;
@@ -645,13 +701,13 @@
 
         function renderSingleChoice(q) {
             q.options.forEach((opt, i) => {
-                const isChecked = userAnswers[q.id] === opt;
+                const isChecked = userAnswers[q.id] === opt.id;
                 const activeClass = isChecked ? 'selected' : '';
                 const html = `
             <div class="option-card ${activeClass}" onclick="selectRadio(this)">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ans" id="opt-${i}" value="${opt}" ${isChecked ? 'checked' : ''}>
-                    <label class="form-check-label w-100" for="opt-${i}">${opt}</label>
+                    <input class="form-check-input" type="radio" name="ans" id="opt-${i}" value="${opt.id}" ${isChecked ? 'checked' : ''}>
+                    <label class="form-check-label w-100" for="opt-${i}">${getText(opt.text)}</label>
                 </div>
             </div>`;
                 inputContainer.insertAdjacentHTML('beforeend', html);
@@ -662,13 +718,13 @@
             helperText.textContent = "Select all that apply.";
             const savedAns = userAnswers[q.id] || [];
             q.options.forEach((opt, i) => {
-                const isChecked = savedAns.includes(opt);
+                const isChecked = savedAns.includes(opt.id);
                 const activeClass = isChecked ? 'selected' : '';
                 const html = `
             <div class="option-card ${activeClass}" onclick="toggleCheckbox(this)">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="ans" id="opt-${i}" value="${opt}" ${isChecked ? 'checked' : ''}>
-                    <label class="form-check-label w-100" for="opt-${i}">${opt}</label>
+                    <input class="form-check-input" type="checkbox" name="ans" id="opt-${i}" value="${opt.id}" ${isChecked ? 'checked' : ''}>
+                    <label class="form-check-label w-100" for="opt-${i}">${getText(opt.text)}</label>
                 </div>
             </div>`;
                 inputContainer.insertAdjacentHTML('beforeend', html);
@@ -684,11 +740,11 @@
             const savedVal = userAnswers[q.id] || '';
             let optionsHtml = `<option value="" disabled ${savedVal === '' ? 'selected' : ''}>Choose...</option>`;
             q.options.forEach(opt => {
-                const isSel = savedVal === opt ? 'selected' : '';
-                optionsHtml += `<option value="${opt}" ${isSel}>${opt}</option>`;
+                const isSel = savedVal === opt.id ? 'selected' : '';
+                optionsHtml += `<option value="${opt.id}" ${isSel}>${getText(opt.text)}</option>`;
             });
             const selectHtml = `<select class="form-select inline-select" id="blank-select">${optionsHtml}</select>`;
-            const parts = q.question.split('{{BLANK}}');
+            const parts = getText(q.question).split('{{BLANK}}');
             if (parts.length > 1) questionText.innerHTML = parts[0] + selectHtml + parts[1];
             else inputContainer.innerHTML = selectHtml;
         }
@@ -697,7 +753,7 @@
             helperText.textContent = "Drag the items below into the correct blanks.";
 
             // 1. Prepare Question Text with Drop Zones
-            let qText = q.question;
+            let qText = getText(q.question);
             // Replace {{id}} with drop zones
             // We need to know which IDs are in the question to render them
             // The q.correctAnswer keys tell us the IDs
@@ -707,9 +763,15 @@
 
             // Regex to find {{n}}
             qText = qText.replace(/{{(\d+)}}/g, (match, id) => {
-                const filledValue = savedAns[id] || "";
-                const filledClass = filledValue ? " filled" : "";
-                const content = filledValue ? `<div class="draggable-item" onclick="returnItem(this)">${filledValue}</div>` : "";
+                const filledId = savedAns[id] || "";
+                let filledText = "";
+                if (filledId) {
+                    const opt = q.options.find(o => o.id === filledId);
+                    filledText = opt ? getText(opt.text) : filledId;
+                }
+
+                const filledClass = filledId ? " filled" : "";
+                const content = filledId ? `<div class="draggable-item" onclick="returnItem(this)" data-val="${filledId}">${filledText}</div>` : "";
                 return `<span class="drop-zone${filledClass}" data-id="${id}" ondragover="allowDrop(event)" ondrop="drop(event)">${content}</span>`;
             });
 
@@ -718,11 +780,11 @@
             // 2. Render Draggable Items
             // Filter out items that are already dropped
             const usedValues = Object.values(savedAns);
-            const availableOptions = q.options.filter(opt => !usedValues.includes(opt));
+            const availableOptions = q.options.filter(opt => !usedValues.includes(opt.id));
 
             let itemsHtml = '<div class="draggable-container" id="draggable-source" ondragover="allowDrop(event)" ondrop="drop(event)">';
             availableOptions.forEach(opt => {
-                itemsHtml += `<div class="draggable-item" draggable="true" ondragstart="drag(event)" data-val="${opt}">${opt}</div>`;
+                itemsHtml += `<div class="draggable-item" draggable="true" ondragstart="drag(event)" data-val="${opt.id}">${getText(opt.text)}</div>`;
             });
             itemsHtml += '</div>';
 
@@ -773,7 +835,11 @@
                 const newItem = document.createElement('div');
                 newItem.className = 'draggable-item';
                 newItem.setAttribute('onclick', 'returnItem(this)');
-                newItem.textContent = val;
+                newItem.dataset.val = val;
+                // We need to find the text for this ID to display it
+                const q = questions[currentIndex];
+                const opt = q.options.find(o => o.id === val);
+                newItem.textContent = opt ? getText(opt.text) : val;
                 target.appendChild(newItem);
 
                 // Remove from source if it came from source
@@ -790,7 +856,10 @@
                     newItem.setAttribute('draggable', 'true');
                     newItem.setAttribute('ondragstart', 'drag(event)');
                     newItem.dataset.val = val;
-                    newItem.textContent = val;
+                    // We need to find the text for this ID to display it
+                    const q = questions[currentIndex];
+                    const opt = q.options.find(o => o.id === val);
+                    newItem.textContent = opt ? getText(opt.text) : val;
                     target.appendChild(newItem);
 
                     draggingEl.remove();
@@ -802,7 +871,7 @@
         }
 
         function returnItem(el) {
-            const val = el.innerText;
+            const val = el.dataset.val; // Use dataset.val (ID) instead of innerText
             const source = document.getElementById('draggable-source');
 
             const newItem = document.createElement('div');
@@ -810,7 +879,10 @@
             newItem.setAttribute('draggable', 'true');
             newItem.setAttribute('ondragstart', 'drag(event)');
             newItem.dataset.val = val;
-            newItem.textContent = val;
+            // We need to find the text for this ID to display it
+            const q = questions[currentIndex];
+            const opt = q.options.find(o => o.id === val);
+            newItem.textContent = opt ? getText(opt.text) : val;
 
             source.appendChild(newItem);
             el.remove();
@@ -887,7 +959,7 @@
                 zones.forEach(z => {
                     const id = z.dataset.id;
                     if (z.children.length > 0) {
-                        ans[id] = z.children[0].innerText;
+                        ans[id] = z.children[0].dataset.val; // Save ID
                     }
                 });
                 // Only save if at least one is filled? Or save partial.
@@ -963,8 +1035,8 @@
                         qScore = tempScore;
                     }
                     else if (q.type === 'drag-drop-text') {
-                        // uAns is object { "1": "Jupiter", "2": "Mars" }
-                        // q.correctAnswer is { "1": "Jupiter", "2": "Mars" }
+                        // uAns is object { "1": "jupiter", "2": "mars" } (IDs)
+                        // q.correctAnswer is { "1": "jupiter", "2": "mars" } (IDs)
                         let correctCount = 0;
                         let totalBlanks = Object.keys(q.correctAnswer).length;
 
@@ -984,7 +1056,7 @@
                 totalScore += qScore;
                 details.push({
                     id: q.id,
-                    text: q.question,
+                    text: getText(q.question),
                     type: q.type,
                     pointsEarned: Math.round(qScore * 100) / 100,
                     maxPoints: q.points
