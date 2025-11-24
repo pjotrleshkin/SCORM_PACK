@@ -141,6 +141,68 @@
         #quiz-title {
             margin-bottom: 0.5rem !important;
         }
+
+        /* Drag and Drop Styles */
+        .draggable-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px dashed #dee2e6;
+            min-height: 60px;
+        }
+
+        .draggable-item {
+            background: white;
+            border: 1px solid #0d6efd;
+            color: #0d6efd;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: grab;
+            user-select: none;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+
+        .draggable-item.dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zone {
+            display: inline-block;
+            min-width: 120px;
+            min-height: 34px;
+            border-bottom: 2px solid #0d6efd;
+            margin: 0 5px;
+            vertical-align: middle;
+            text-align: center;
+            background: #e7f1ff;
+            border-radius: 4px 4px 0 0;
+            padding: 2px 10px;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        .drop-zone.drag-over {
+            background: #cfe2ff;
+            border-bottom-width: 3px;
+        }
+
+        .drop-zone .draggable-item {
+            margin: 0;
+            box-shadow: none;
+            border: none;
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -562,6 +624,7 @@
                 case 'multiple': renderMultipleChoice(q); break;
                 case 'text': renderTextInput(q); break;
                 case 'fill-blank': renderFillBlank(q); break;
+                case 'drag-drop-text': renderDragDropText(q); break;
             }
             updateProgress(index);
         }
@@ -630,6 +693,138 @@
             else inputContainer.innerHTML = selectHtml;
         }
 
+        function renderDragDropText(q) {
+            helperText.textContent = "Drag the items below into the correct blanks.";
+
+            // 1. Prepare Question Text with Drop Zones
+            let qText = q.question;
+            // Replace {{id}} with drop zones
+            // We need to know which IDs are in the question to render them
+            // The q.correctAnswer keys tell us the IDs
+
+            // We also need to handle previously saved answers
+            const savedAns = userAnswers[q.id] || {};
+
+            // Regex to find {{n}}
+            qText = qText.replace(/{{(\d+)}}/g, (match, id) => {
+                const filledValue = savedAns[id] || "";
+                const filledClass = filledValue ? " filled" : "";
+                const content = filledValue ? `<div class="draggable-item" onclick="returnItem(this)">${filledValue}</div>` : "";
+                return `<span class="drop-zone${filledClass}" data-id="${id}" ondragover="allowDrop(event)" ondrop="drop(event)">${content}</span>`;
+            });
+
+            questionText.innerHTML = qText;
+
+            // 2. Render Draggable Items
+            // Filter out items that are already dropped
+            const usedValues = Object.values(savedAns);
+            const availableOptions = q.options.filter(opt => !usedValues.includes(opt));
+
+            let itemsHtml = '<div class="draggable-container" id="draggable-source" ondragover="allowDrop(event)" ondrop="drop(event)">';
+            availableOptions.forEach(opt => {
+                itemsHtml += `<div class="draggable-item" draggable="true" ondragstart="drag(event)" data-val="${opt}">${opt}</div>`;
+            });
+            itemsHtml += '</div>';
+
+            inputContainer.innerHTML = itemsHtml;
+        }
+
+        // --- DRAG AND DROP HANDLERS ---
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.dataset.val);
+            ev.target.classList.add('dragging');
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+            if (ev.target.classList.contains('drop-zone') || ev.target.id === 'draggable-source') {
+                ev.target.classList.add('drag-over');
+            }
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            const val = ev.dataTransfer.getData("text");
+            const draggingEl = document.querySelector('.dragging');
+
+            // Cleanup dragging class
+            if (draggingEl) draggingEl.classList.remove('dragging');
+
+            // Identify Target
+            let target = ev.target;
+
+            // If dropped on an item inside a drop zone, target the drop zone
+            if (target.classList.contains('draggable-item') && target.parentElement.classList.contains('drop-zone')) {
+                const parent = target.parentElement;
+                returnItem(target); // Return existing item to source
+                target = parent; // Set target to the now empty drop zone
+            }
+
+            // Remove drag-over styling
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+
+            if (target.classList.contains('drop-zone')) {
+                // Check if already has item
+                if (target.children.length > 0) {
+                    returnItem(target.firstChild);
+                }
+
+                // Create new item in drop zone
+                const newItem = document.createElement('div');
+                newItem.className = 'draggable-item';
+                newItem.setAttribute('onclick', 'returnItem(this)');
+                newItem.textContent = val;
+                target.appendChild(newItem);
+
+                // Remove from source if it came from source
+                if (draggingEl && draggingEl.parentElement && draggingEl.parentElement.id === 'draggable-source') {
+                    draggingEl.remove();
+                }
+            } else if (target.id === 'draggable-source') {
+                // Returning to source
+                if (draggingEl && draggingEl.parentElement.classList.contains('drop-zone')) {
+                    // It was in a drop zone, now moving to source
+                    // Create new item in source
+                    const newItem = document.createElement('div');
+                    newItem.className = 'draggable-item';
+                    newItem.setAttribute('draggable', 'true');
+                    newItem.setAttribute('ondragstart', 'drag(event)');
+                    newItem.dataset.val = val;
+                    newItem.textContent = val;
+                    target.appendChild(newItem);
+
+                    draggingEl.remove();
+                }
+            }
+
+            // Auto-save state
+            saveCurrentAnswer();
+        }
+
+        function returnItem(el) {
+            const val = el.innerText;
+            const source = document.getElementById('draggable-source');
+
+            const newItem = document.createElement('div');
+            newItem.className = 'draggable-item';
+            newItem.setAttribute('draggable', 'true');
+            newItem.setAttribute('ondragstart', 'drag(event)');
+            newItem.dataset.val = val;
+            newItem.textContent = val;
+
+            source.appendChild(newItem);
+            el.remove();
+            saveCurrentAnswer();
+        }
+
+        // Remove drag-over on leave
+        document.addEventListener('dragleave', (e) => {
+            if (e.target.classList.contains('drop-zone') || e.target.id === 'draggable-source') {
+                e.target.classList.remove('drag-over');
+            }
+        });
+
+
         // --- INTERACTION HELPERS ---
         window.selectRadio = function (div) {
             div.querySelector('input').checked = true;
@@ -685,6 +880,23 @@
             else if (q.type === 'fill-blank') {
                 const el = document.getElementById('blank-select');
                 if (el) userAnswers[q.id] = el.value;
+            }
+            else if (q.type === 'drag-drop-text') {
+                const zones = document.querySelectorAll('.drop-zone');
+                const ans = {};
+                zones.forEach(z => {
+                    const id = z.dataset.id;
+                    if (z.children.length > 0) {
+                        ans[id] = z.children[0].innerText;
+                    }
+                });
+                // Only save if at least one is filled? Or save partial.
+                // Let's save partial.
+                if (Object.keys(ans).length > 0) {
+                    userAnswers[q.id] = ans;
+                } else {
+                    delete userAnswers[q.id];
+                }
             }
         }
 
@@ -749,6 +961,23 @@
                         });
                         if (tempScore < 0) tempScore = 0;
                         qScore = tempScore;
+                    }
+                    else if (q.type === 'drag-drop-text') {
+                        // uAns is object { "1": "Jupiter", "2": "Mars" }
+                        // q.correctAnswer is { "1": "Jupiter", "2": "Mars" }
+                        let correctCount = 0;
+                        let totalBlanks = Object.keys(q.correctAnswer).length;
+
+                        for (const [key, val] of Object.entries(q.correctAnswer)) {
+                            if (uAns[key] === val) {
+                                correctCount++;
+                            }
+                        }
+
+                        // Partial credit
+                        if (totalBlanks > 0) {
+                            qScore = (correctCount / totalBlanks) * q.points;
+                        }
                     }
                 }
 
@@ -869,8 +1098,9 @@
         // --- SCORM EXIT HANDLER ---
 
         /**
-         * Executes a final SCORM Finish/Exit command when the user closes the window or navigates away.
-         * This is the safest way to ensure data is recorded without forcing an immediate window close
+         * Ensure we close the SCORM session when the window closes,
+         * BUT only if we haven't already finished it (e.g. max attempts).
+         * We generally want to leave the session 'incomplete' or 'passed/failed'
          * upon quiz submission.
          */
         window.addEventListener('unload', function (event) {

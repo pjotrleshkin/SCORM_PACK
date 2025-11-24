@@ -2,6 +2,11 @@
 
 A web-based tool for creating SCORM 1.2 compliant assessment packages. This project allows users to visually design quizzes, configure settings, and generate a downloadable ZIP package ready for LMS upload.
 
+## Map for future development
+
+1. add drag and drop question type
+2. add different languages for questions
+3. add dark light colorblind mode
 ## Features
 
 ### 1. Quiz Generator (`quiz_generator.html`)

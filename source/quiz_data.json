@@ -98,6 +98,24 @@
         "&lt;href&gt;"
       ],
       "correctAnswer": "<a>"
+    },
+    {
+      "id": 7,
+      "type": "drag-drop-text",
+      "points": 5,
+      "question": "The {{1}} is the largest planet in our solar system, while {{2}} is known as the Red Planet.",
+      "options": [
+        "Jupiter",
+        "Jupiter",
+        "Mars",
+        "Earth",
+        "Venus",
+        "Saturn"
+      ],
+      "correctAnswer": {
+        "1": "Jupiter",
+        "2": "Mars"
+      }
     }
   ]
 }

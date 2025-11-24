@@ -1,6 +1,16 @@
 {
   "config": {
-    "TITLE": "Gangsta Quiz",
+    "languages": [
+      "en",
+      "es",
+      "de"
+    ],
+    "defaultLanguage": "en",
+    "TITLE": {
+      "en": "Gangsta Quiz",
+      "es": "Cuestionario Gangsta",
+      "de": "Gangsta-Quiz"
+    },
     "MAX_ATTEMPTS": 999,
     "DISPLAY_ATTEMPTS_COUNTER": true,
     "PASS_PERCENTAGE": 80,
@@ -12,32 +22,94 @@
       "id": 0,
       "type": "description",
       "points": 0,
-      "question": "Confidentiality Agreement",
-      "content": "This assessment contains proprietary information. By proceeding, you agree not to share these questions or answers with colleagues. Failure to comply may result in disciplinary action.",
+      "question": {
+        "en": "Confidentiality Agreement",
+        "es": "Acuerdo de Confidencialidad",
+        "de": "Vertraulichkeitsvereinbarung"
+      },
+      "content": {
+        "en": "This assessment contains proprietary information. By proceeding, you agree not to share these questions or answers with colleagues. Failure to comply may result in disciplinary action.",
+        "es": "Esta evaluación contiene información propietaria. Al continuar, usted acepta no compartir estas preguntas o respuestas con colegas. El incumplimiento puede resultar en medidas disciplinarias.",
+        "de": "Diese Bewertung enthält geschützte Informationen. Wenn Sie fortfahren, erklären Sie sich damit einverstanden, diese Fragen oder Antworten nicht an Kollegen weiterzugeben. Bei Nichteinhaltung können Disziplinarmaßnahmen ergriffen werden."
+      },
       "blockNext": true,
-      "confirmLabel": "I have read and agree to the terms."
+      "confirmLabel": {
+        "en": "I have read and agree to the terms.",
+        "es": "He leído y acepto los términos.",
+        "de": "Ich habe die Bedingungen gelesen und stimme ihnen zu."
+      }
     },
     {
       "id": 1,
       "type": "boolean",
       "points": 1,
-      "question": "is inline css good practice?",
+      "question": {
+        "en": "is inline css good practice?",
+        "es": "¿es buena práctica el css en línea?",
+        "de": "Ist Inline-CSS eine gute Praxis?"
+      },
       "options": [
-        "True",
-        "False"
+        {
+          "id": "true",
+          "text": {
+            "en": "True",
+            "es": "Verdadero",
+            "de": "Wahr"
+          }
+        },
+        {
+          "id": "false",
+          "text": {
+            "en": "False",
+            "es": "Falso",
+            "de": "Falsch"
+          }
+        }
       ],
-      "correctAnswer": "False"
+      "correctAnswer": "false"
     },
     {
       "id": 2,
       "type": "single",
       "points": 1,
-      "question": "What implies that a variable cannot be reassigned in JavaScript?",
+      "question": {
+        "en": "What implies that a variable cannot be reassigned in JavaScript?",
+        "es": "¿Qué implica que una variable no puede ser reasignada en JavaScript?",
+        "de": "Was bedeutet, dass eine Variable in JavaScript nicht neu zugewiesen werden kann?"
+      },
       "options": [
-        "var",
-        "let",
-        "const",
-        "function"
+        {
+          "id": "var",
+          "text": {
+            "en": "var",
+            "es": "var",
+            "de": "var"
+          }
+        },
+        {
+          "id": "let",
+          "text": {
+            "en": "let",
+            "es": "let",
+            "de": "let"
+          }
+        },
+        {
+          "id": "const",
+          "text": {
+            "en": "const",
+            "es": "const",
+            "de": "const"
+          }
+        },
+        {
+          "id": "function",
+          "text": {
+            "en": "function",
+            "es": "function",
+            "de": "function"
+          }
+        }
       ],
       "correctAnswer": "const"
     },
@@ -46,36 +118,97 @@
       "type": "multiple",
       "points": 1,
       "penalty": 0.33,
-      "question": "Which of the following are valid HTTP methods?",
+      "question": {
+        "en": "Which of the following are valid HTTP methods?",
+        "es": "¿Cuáles de los siguientes son métodos HTTP válidos?",
+        "de": "Welche der folgenden sind gültige HTTP-Methoden?"
+      },
       "options": [
-        "GET",
-        "POST",
-        "JUMP",
-        "DELETE",
-        "STOP"
+        {
+          "id": "get",
+          "text": {
+            "en": "GET",
+            "es": "GET",
+            "de": "GET"
+          }
+        },
+        {
+          "id": "post",
+          "text": {
+            "en": "POST",
+            "es": "POST",
+            "de": "POST"
+          }
+        },
+        {
+          "id": "jump",
+          "text": {
+            "en": "JUMP",
+            "es": "JUMP",
+            "de": "JUMP"
+          }
+        },
+        {
+          "id": "delete",
+          "text": {
+            "en": "DELETE",
+            "es": "DELETE",
+            "de": "DELETE"
+          }
+        },
+        {
+          "id": "stop",
+          "text": {
+            "en": "STOP",
+            "es": "STOP",
+            "de": "STOP"
+          }
+        }
       ],
       "correctAnswer": [
-        "GET",
-        "POST",
-        "DELETE"
+        "get",
+        "post",
+        "delete"
       ]
     },
     {
       "id": 4,
       "type": "boolean",
       "points": 1,
-      "question": "HTML is a programming language.",
+      "question": {
+        "en": "HTML is a programming language.",
+        "es": "HTML es un lenguaje de programación.",
+        "de": "HTML ist eine Programmiersprache."
+      },
       "options": [
-        "True",
-        "False"
+        {
+          "id": "true",
+          "text": {
+            "en": "True",
+            "es": "Verdadero",
+            "de": "Wahr"
+          }
+        },
+        {
+          "id": "false",
+          "text": {
+            "en": "False",
+            "es": "Falso",
+            "de": "Falsch"
+          }
+        }
       ],
-      "correctAnswer": "False"
+      "correctAnswer": "false"
     },
     {
       "id": 5,
       "type": "text",
       "points": 5,
-      "question": "Type a keyword used to return a value from a function.",
+      "question": {
+        "en": "Type a keyword used to return a value from a function.",
+        "es": "Escribe una palabra clave usada para devolver un valor de una función.",
+        "de": "Geben Sie ein Schlüsselwort ein, das verwendet wird, um einen Wert aus einer Funktion zurückzugeben."
+      },
       "options": [],
       "correctAnswer": [
         "return",
@@ -86,13 +219,94 @@
       "id": 6,
       "type": "fill-blank",
       "points": 3,
-      "question": "The {{BLANK}} tag is used to define a hyperlink.",
+      "question": {
+        "en": "The {{BLANK}} tag is used to define a hyperlink.",
+        "es": "La etiqueta {{BLANK}} se usa para definir un hipervínculo.",
+        "de": "Das {{BLANK}}-Tag wird verwendet, um einen Hyperlink zu definieren."
+      },
       "options": [
-        "&lt;link&gt;",
-        "&lt;a&gt;",
-        "&lt;href&gt;"
+        {
+          "id": "link",
+          "text": {
+            "en": "&lt;link&gt;",
+            "es": "&lt;link&gt;",
+            "de": "&lt;link&gt;"
+          }
+        },
+        {
+          "id": "a",
+          "text": {
+            "en": "&lt;a&gt;",
+            "es": "&lt;a&gt;",
+            "de": "&lt;a&gt;"
+          }
+        },
+        {
+          "id": "href",
+          "text": {
+            "en": "&lt;href&gt;",
+            "es": "&lt;href&gt;",
+            "de": "&lt;href&gt;"
+          }
+        }
       ],
-      "correctAnswer": "<a>"
+      "correctAnswer": "a"
+    },
+    {
+      "id": 7,
+      "type": "drag-drop-text",
+      "points": 5,
+      "question": {
+        "en": "The {{1}} is the largest planet in our solar system, while {{2}} is known as the Red Planet.",
+        "es": "El {{1}} es el planeta más grande de nuestro sistema solar, mientras que {{2}} es conocido como el Planeta Rojo.",
+        "de": "Der {{1}} ist der größte Planet in unserem Sonnensystem, während {{2}} als der Rote Planet bekannt ist."
+      },
+      "options": [
+        {
+          "id": "jupiter",
+          "text": {
+            "en": "Jupiter",
+            "es": "Júpiter",
+            "de": "Jupiter"
+          }
+        },
+        {
+          "id": "mars",
+          "text": {
+            "en": "Mars",
+            "es": "Marte",
+            "de": "Mars"
+          }
+        },
+        {
+          "id": "earth",
+          "text": {
+            "en": "Earth",
+            "es": "Tierra",
+            "de": "Erde"
+          }
+        },
+        {
+          "id": "venus",
+          "text": {
+            "en": "Venus",
+            "es": "Venus",
+            "de": "Venus"
+          }
+        },
+        {
+          "id": "saturn",
+          "text": {
+            "en": "Saturn",
+            "es": "Saturno",
+            "de": "Saturn"
+          }
+        }
+      ],
+      "correctAnswer": {
+        "1": "jupiter",
+        "2": "mars"
+      }
     }
   ]
 }
