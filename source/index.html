@@ -5,77 +5,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PH Assessment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Brand Colors */
+            --primary-color: #0d6efd;
+            --primary-hover: #0b5ed7;
+            --secondary-color: #6c757d;
+
+            /* Backgrounds */
+            --bg-body: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-option: #ffffff;
+            --bg-option-hover: #f8f9fa;
+            --bg-option-selected: #e7f1ff;
+
+            /* Text */
+            --text-main: #212529;
+            --text-muted: #6c757d;
+            --text-heading: #111111;
+
+            /* Borders & UI */
+            --border-color: #dee2e6;
+            --border-radius: 12px;
+            --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+            --transition-speed: 0.2s;
+        }
+
         body {
-            background-color: #f8f9fa;
-            padding-top: 20px;
-            padding-bottom: 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            padding-top: 40px;
+            padding-bottom: 60px;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--text-heading);
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         .quiz-container {
-            max-width: 66%;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
         .logo-container {
             text-align: center;
             margin-bottom: 2rem;
-            padding: 0 20px;
-            /* Add padding for small screens */
+            padding: 0 100px;
         }
 
         .logo-img {
             max-width: 100%;
-            /* Ensure it scales down */
             height: auto;
-            max-height: 200px;
-            /* Limit max height on large screens */
+            max-height: 180px;
             display: inline-block;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
         }
 
         fieldset {
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            padding: 2rem;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: var(--box-shadow);
         }
 
         legend {
-            font-weight: 700;
-            font-size: 1.4rem;
+            font-weight: 800;
+            font-size: 1.6rem;
             margin-bottom: 1.5rem;
+            color: var(--text-heading);
+            line-height: 1.3;
+        }
+
+        #input-container {
+            margin-bottom: 3.5rem !important;
         }
 
         .option-card {
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            padding: 12px 15px;
-            margin-bottom: 10px;
+            /* increase spacing between options */
+            margin-bottom: 24px;
+            background: var(--bg-option);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px 20px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all var(--transition-speed);
+            position: relative;
         }
 
         .option-card:hover {
-            background-color: #f8f9fa;
+            background-color: var(--bg-option-hover);
             border-color: #adb5bd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
 
         .option-card.selected {
-            background-color: #e7f1ff;
-            border-color: #0d6efd;
-            color: #0d6efd;
+            background-color: var(--bg-option-selected);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 0 0 1px var(--primary-color);
         }
 
         .description-box {
             background-color: #e9ecef;
-            border-left: 5px solid #0d6efd;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            border-left: 5px solid var(--primary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
             font-size: 1.05rem;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .inline-select {
@@ -83,92 +136,107 @@
             width: auto;
             min-width: 150px;
             margin: 0 5px;
-            font-weight: bold;
-            border-color: #0d6efd;
+            font-weight: 600;
+            border-color: var(--primary-color);
+            border-radius: 6px;
         }
 
         .points-badge {
             font-size: 0.85rem;
             background-color: #e9ecef;
-            color: #495057;
-            padding: 2px 8px;
-            border-radius: 12px;
-            margin-left: 8px;
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: 10px;
+            font-weight: 600;
         }
 
         /* Welcome Screen Styles */
         .welcome-card {
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            padding: 3rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 3.5rem;
             text-align: center;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+            box-shadow: var(--box-shadow);
         }
 
         .stat-box {
             background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 1px solid #e9ecef;
         }
 
         /* Result Screen Styles */
         .score-percentage {
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 800;
-            color: #0d6efd;
+            color: var(--primary-color);
             line-height: 1;
             margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 0px rgba(13, 110, 253, 0.1);
         }
 
         .result-gif {
             max-width: 100%;
             height: auto;
-            max-height: 500px;
-            /* Limit height as requested */
+            max-height: 400px;
             object-fit: contain;
-            margin: 20px 0;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 25px 0;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
         #loading-screen {
             text-align: center;
-            padding: 50px;
+            padding: 80px;
         }
 
         #quiz-title {
             margin-bottom: 0.5rem !important;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         /* Drag and Drop Styles */
         .draggable-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px dashed #dee2e6;
-            min-height: 60px;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f1f3f5;
+            border-radius: 12px;
+            border: 2px dashed #dee2e6;
+            min-height: 80px;
+            align-items: center;
         }
 
         .draggable-item {
             background: white;
-            border: 1px solid #0d6efd;
-            color: #0d6efd;
-            padding: 5px 15px;
-            border-radius: 20px;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 18px;
+            border-radius: 50px;
             cursor: grab;
             user-select: none;
-            font-weight: 500;
+            font-weight: 600;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease;
+        }
+
+        .draggable-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
         }
 
         .draggable-item:active {
             cursor: grabbing;
+            transform: scale(0.95);
         }
 
         .draggable-item.dragging {
@@ -176,18 +244,20 @@
         }
 
         .drop-zone {
-            display: inline-block;
+            display: inline-flex;
             min-width: 120px;
-            min-height: 34px;
-            border-bottom: 2px solid #0d6efd;
-            margin: 0 5px;
+            min-height: 38px;
+            border-bottom: 2px solid var(--primary-color);
+            margin: 0 6px;
             vertical-align: middle;
-            text-align: center;
+            justify-content: center;
+            align-items: center;
             background: #e7f1ff;
-            border-radius: 4px 4px 0 0;
-            padding: 2px 10px;
-            color: #0d6efd;
+            border-radius: 6px 6px 0 0;
+            padding: 2px 12px;
+            color: var(--primary-color);
             font-weight: bold;
+            transition: background 0.2s;
         }
 
         .drop-zone.drag-over {
@@ -202,15 +272,58 @@
             background: transparent;
             padding: 0;
             cursor: pointer;
+            color: inherit;
+        }
+
+        .drop-zone .draggable-item:hover {
+            background: transparent;
+            transform: none;
+            color: inherit;
         }
 
         .language-selector {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             width: auto;
-            min-width: 120px;
-            z-index: 1000;
+            min-width: 100px;
+        }
+
+        .language-selector select {
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            padding: 5px 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .language-selector select:hover {
+            border-color: var(--primary-color);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 0rem;
+            flex-wrap: wrap;
+        }
+
+        /* Progress Bar Enhancements */
+        .progress {
+            height: 12px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            border-radius: 20px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+            box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
         }
     </style>
 </head>
@@ -218,14 +331,16 @@
 <body>
 
     <div class="container quiz-container position-relative">
-        <div class="language-selector">
-            <select id="lang-select" class="form-select form-select-sm" onchange="setLanguage(this.value)"
-                style="display:none;">
-            </select>
-        </div>
 
-        <div class="logo-container">
-            <img src="logo.png" alt="Company Logo" class="logo-img">
+        <div class="header-container">
+            <div class="logo-container" style="margin-bottom: 0;">
+                <img src="logo.png" alt="Company Logo" class="logo-img">
+            </div>
+            <div class="language-selector">
+                <select id="lang-select" class="form-select form-select-sm" onchange="setLanguage(this.value)"
+                    style="display:none;">
+                </select>
+            </div>
         </div>
 
         <!-- Loading Screen -->
@@ -478,8 +593,18 @@
                 const langSelect = document.getElementById('lang-select');
                 if (supportedLanguages.length > 1) {
                     langSelect.style.display = 'block';
+                    const languageNames = {
+                        en: "English",
+                        de: "Deutsch",
+                        es: "Español",
+                        fr: "Français",
+                        it: "Italiano",
+                        pt: "Português",
+                        ru: "Русский",
+                        zh: "中文"
+                    };
                     langSelect.innerHTML = supportedLanguages.map(lang =>
-                        `<option value="${lang}" ${lang === currentLanguage ? 'selected' : ''}>${lang.toUpperCase()}</option>`
+                        `<option value="${lang}" ${lang === currentLanguage ? 'selected' : ''}>${languageNames[lang] || lang.toUpperCase()}</option>`
                     ).join('');
                 }
 
