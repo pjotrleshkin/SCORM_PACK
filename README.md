@@ -1,4 +1,4 @@
-# SCORM Package Generator
+#  Simple Quiz SCORM Package Generator
 
 A web-based tool for creating SCORM 1.2 compliant assessment packages. This project allows users to visually design quizzes, configure settings, and generate a downloadable ZIP package ready for LMS upload.
 
