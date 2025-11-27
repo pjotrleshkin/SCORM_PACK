@@ -34,12 +34,28 @@
             --transition-speed: 0.2s;
         }
 
+        [data-bs-theme="dark"] {
+            --bg-body: #212529;
+            --bg-card: #343a40;
+            --bg-option: #2b3035;
+            --bg-option-hover: #343a40;
+            --bg-option-selected: #0a58ca;
+
+            --text-main: #f8f9fa;
+            --text-muted: #adb5bd;
+            --text-heading: #ffffff;
+
+            --border-color: #495057;
+            --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+        }
+
         html {
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: var(--bg-body);
+            /* Changed from gradient to var for theme support */
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
             padding-top: 40px;
@@ -96,6 +112,10 @@
 
         #input-container {
             margin-bottom: 3.5rem !important;
+        }
+
+        #attempt-badge {
+            margin-bottom: 0.33rem !important;
         }
 
         .option-card {
@@ -199,13 +219,14 @@
         }
 
         #quiz-title {
-            margin-bottom: 0.5rem !important;
+            margin-top: 2.5rem !important;
+            margin-bottom: 1rem !important;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
 
         button {
-            font-weight: 1200 !important;
+            font-weight: 700 !important;
             font-size: 1.1rem !important;
             border-radius: 30px !important;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5) !important;
@@ -343,6 +364,18 @@
 </head>
 
 <body>
+    <!-- Language Selector aligned to right of the page-->
+    <div class="language-selector"
+        style='position: absolute; right: 5px; top: 5px; display: flex; gap: 10px; align-items: center;'>
+        <button id="theme-toggle" class="btn btn-sm btn-outline-secondary rounded-circle" onclick="toggleTheme()"
+            title="Toggle Theme"
+            style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;">
+            <i class="bi bi-moon-fill"></i>
+        </button>
+        <select id="lang-select" class="form-select form-select-sm" onchange="setLanguage(this.value)"
+            style="display:none;">
+        </select>
+    </div>
 
 
     <div class="container quiz-container position-relative">
@@ -352,11 +385,7 @@
                 <img src="logo.png" alt="Company Logo" class="logo-img">
             </div>
         </div>
-        <div class="language-selector">
-            <select id="lang-select" class="form-select form-select-sm" onchange="setLanguage(this.value)"
-                style="display:none;">
-            </select>
-        </div>
+
 
         <!-- Loading Screen -->
         <div id="loading-screen">
@@ -575,6 +604,10 @@
         async function init() {
             // 1. Initialize SCORM
             scorm.init();
+
+            // Initialize Theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
 
             // 2. Fetch Quiz Data
             try {
@@ -1324,6 +1357,28 @@
         });
 
         init();
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme') || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            const icon = document.querySelector('#theme-toggle i');
+            if (icon) {
+                if (theme === 'dark') {
+                    icon.classList.replace('bi-moon-fill', 'bi-sun-fill');
+                    icon.classList.replace('text-dark', 'text-light');
+                } else {
+                    icon.classList.replace('bi-sun-fill', 'bi-moon-fill');
+                    icon.classList.replace('text-light', 'text-dark');
+                }
+            }
+        }
 
     </script>
 </body>
