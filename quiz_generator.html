@@ -88,19 +88,40 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                 <label class="form-label">Quiz Title <i class="bi bi-info-circle info-btn"
                                         data-guide-key="config.TITLE"></i></label>
                                 <input type="text" class="form-control" id="conf-title"
                                     value="Safety & Compliance Quiz">
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Editing Language</label>
-                                <select class="form-select" id="editor-language"
-                                    onchange="changeEditorLanguage(this.value)">
-                                    <option value="en">English (en)</option>
+
+                            <!-- Language Configuration -->
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Supported Languages</label>
+                                <div class="card p-3 bg-light">
+                                    <div class="row" id="language-checkboxes">
+                                        <!-- Populated by JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Default Language <i class="bi bi-info-circle info-btn"
+                                        data-guide-key="config.defaultLanguage"></i></label>
+                                <select class="form-select" id="conf-default-lang"
+                                    onchange="updateDefaultLanguage(this.value)">
+                                    <!-- Populated by JS -->
                                 </select>
                             </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Editing Language (Current View)</label>
+                                <select class="form-select" id="editor-language"
+                                    onchange="changeEditorLanguage(this.value)">
+                                    <!-- Populated by JS -->
+                                </select>
+                            </div>
+
                             <div class="col-md-6">
                                 <label class="form-label">Max Attempts <i class="bi bi-info-circle info-btn"
                                         data-guide-key="config.MAX_ATTEMPTS"></i></label>
@@ -204,7 +225,6 @@
         <button class="btn btn-dark rounded-pill" onclick="showJsonModal()">
             <i class="bi bi-code-slash me-2"></i>View JSON
         </button>
-        <!-- Download button removed from here as per request -->
     </div>
 
     <!-- JSON MODAL -->
@@ -647,11 +667,24 @@
         let guideData = {};
         let jsonModal = null;
 
+        const AVAILABLE_LANGUAGES = {
+            en: "English",
+            de: "Deutsch",
+            es: "Español",
+            fr: "Français",
+            it: "Italiano",
+            pt: "Português",
+            ru: "Русский",
+            ua: "Українська",
+            rs: "Српски",
+            zh: "中文"
+        };
+
         // DOM ELEMENTS
         const container = document.getElementById('questions-container');
         const template = document.getElementById('question-template');
         const jsonPreview = document.getElementById('json-preview');
-        const langSelect = document.getElementById('editor-language');
+        // const langSelect = document.getElementById('editor-language'); // Removed, accessed dynamically
 
         // INIT
         window.addEventListener('DOMContentLoaded', async () => {
@@ -793,17 +826,105 @@
         function loadFromData(data) {
             globalQuizData = JSON.parse(JSON.stringify(data));
 
-            // Setup Languages
-            const langs = globalQuizData.config.languages || ['en'];
-            langSelect.innerHTML = langs.map(l => `<option value="${l}">${l.toUpperCase()}</option>`).join('');
-
-            // Try to keep current language if it exists in new data, else default
-            if (!langs.includes(currentEditorLanguage)) {
-                currentEditorLanguage = globalQuizData.config.defaultLanguage || 'en';
+            // Ensure config.languages exists
+            if (!globalQuizData.config.languages || !Array.isArray(globalQuizData.config.languages)) {
+                globalQuizData.config.languages = ['en'];
             }
-            langSelect.value = currentEditorLanguage;
 
+            renderLanguageSelection();
             renderUI();
+        }
+
+        function renderLanguageSelection() {
+            const container = document.getElementById('language-checkboxes');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const currentLangs = globalQuizData.config.languages;
+
+            Object.entries(AVAILABLE_LANGUAGES).forEach(([code, name]) => {
+                const isChecked = currentLangs.includes(code);
+                const col = document.createElement('div');
+                col.className = 'col-md-3 col-6 mb-2';
+                col.innerHTML = `
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="${code}" id="lang-${code}" 
+                            ${isChecked ? 'checked' : ''} onchange="updateLanguages('${code}', this.checked)">
+                        <label class="form-check-label" for="lang-${code}">
+                            ${name} <small class="text-muted">(${code})</small>
+                        </label>
+                    </div>
+                `;
+                container.appendChild(col);
+            });
+
+            updateDropdowns();
+        }
+
+        function updateLanguages(code, isChecked) {
+            let langs = globalQuizData.config.languages;
+
+            if (isChecked) {
+                if (!langs.includes(code)) langs.push(code);
+            } else {
+                // Prevent removing the last language
+                if (langs.length <= 1) {
+                    alert("At least one language must be selected.");
+                    document.getElementById(`lang-${code}`).checked = true;
+                    return;
+                }
+                langs = langs.filter(l => l !== code);
+            }
+
+            globalQuizData.config.languages = langs;
+
+            // If default language is no longer available, reset it
+            if (!langs.includes(globalQuizData.config.defaultLanguage)) {
+                globalQuizData.config.defaultLanguage = langs[0];
+            }
+
+            // If current editor language is no longer available, switch it
+            if (!langs.includes(currentEditorLanguage)) {
+                currentEditorLanguage = langs[0];
+            }
+
+            updateDropdowns();
+            generateJson();
+        }
+
+        function updateDefaultLanguage(val) {
+            globalQuizData.config.defaultLanguage = val;
+            generateJson();
+        }
+
+        function updateDropdowns() {
+            const langs = globalQuizData.config.languages;
+            const defaultSelect = document.getElementById('conf-default-lang');
+            const editorSelect = document.getElementById('editor-language');
+
+            if (!defaultSelect || !editorSelect) return;
+
+            // Save current selections if possible
+            const currentDefault = globalQuizData.config.defaultLanguage;
+            const currentEditor = currentEditorLanguage;
+
+            // Populate Default Language Dropdown
+            defaultSelect.innerHTML = langs.map(l =>
+                `<option value="${l}" ${l === currentDefault ? 'selected' : ''}>
+                    ${AVAILABLE_LANGUAGES[l] || l} (${l})
+                </option>`
+            ).join('');
+
+            // Populate Editor Language Dropdown
+            editorSelect.innerHTML = langs.map(l =>
+                `<option value="${l}" ${l === currentEditor ? 'selected' : ''}>
+                    ${AVAILABLE_LANGUAGES[l] || l} (${l})
+                </option>`
+            ).join('');
+
+            // Ensure values are set (in case of re-render)
+            defaultSelect.value = globalQuizData.config.defaultLanguage || langs[0];
+            editorSelect.value = currentEditorLanguage;
         }
 
         function changeEditorLanguage(lang) {
@@ -819,6 +940,9 @@
             document.getElementById('conf-display-points').checked = globalQuizData.config.DISPLAY_NEEDED_POINTS;
             document.getElementById('conf-display-attempts').checked = globalQuizData.config.DISPLAY_ATTEMPTS_COUNTER;
             document.getElementById('conf-commit-start').checked = globalQuizData.config.COMMIT_ATTEMPT_ON_START;
+
+            // Ensure dropdowns are in sync
+            updateDropdowns();
 
             // Questions
             container.innerHTML = '';
@@ -1037,7 +1161,7 @@
                 descGroup.classList.remove('d-none');
                 textLabel.textContent = "Content (HTML allowed)";
             } else if (type === 'fill-blank') {
-                textLabel.textContent = "Question Text (use {{BLANK}} for placeholder)";
+                textLabel.textContent = "Question Text (use {{BLANK}}... for placeholder)";
             } else if (type === 'drag-drop-text') {
                 textLabel.textContent = "Question Text (use {{1}}, {{2}}... for placeholders)";
             }

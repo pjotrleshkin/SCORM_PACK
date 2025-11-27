@@ -4,9 +4,30 @@ A web-based tool for creating SCORM 1.2 compliant assessment packages. This proj
 
 ## Map for future development
 
-1. add drag and drop question type
-2. add different languages for questions
-3. add dark light colorblind mode
+
+### quiz_generator.html
+1. [x] add drag and drop question type 
+2. add different languages for quiz 
+    - [x] expand list to 14 languages
+    - [ ] fix info button next to default language
+    - [ ] add info button next to supported languages (and description,how languages work) 
+    - [ ] add language switcher to the top of the page, absolute position
+
+3. add check for empty questions (in all selected languages) before generating the package
+    - [ ] add alert message
+    - [ ] add modal with list of empty questions
+
+### test jsons
+1. create test jsons with new structure
+
+### scorm_creator.php
+1. generate .html file dynamically, based on the data from quiz_generator.html, with proper filetypes for images/gifs
+
+### index.html
+1-2. add dark mode
+1-2. experiment with greeting page
+
+
 ## Features
 
 ### 1. Quiz Generator (`quiz_generator.html`)
