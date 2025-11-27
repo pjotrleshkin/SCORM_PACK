@@ -16,7 +16,7 @@
             --secondary-color: #6c757d;
 
             /* Backgrounds */
-            --bg-body: #f8f9fa;
+            --bg-body: linear-gradient(90deg, rgba(161, 230, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
             --bg-card: #ffffff;
             --bg-option: #ffffff;
             --bg-option-hover: #f8f9fa;
@@ -35,7 +35,7 @@
         }
 
         [data-bs-theme="dark"] {
-            --bg-body: #212529;
+            --bg-body: linear-gradient(90deg, rgba(0, 6, 8, 1) 1%, rgba(5, 53, 66, 1) 48%, rgba(4, 135, 140, 1) 77%, rgba(0, 0, 224, 1) 100%);
             --bg-card: #343a40;
             --bg-option: #2b3035;
             --bg-option-hover: #343a40;
@@ -364,14 +364,16 @@
 </head>
 
 <body>
-    <!-- Language Selector aligned to right of the page-->
-    <div class="language-selector"
-        style='position: absolute; right: 5px; top: 5px; display: flex; gap: 10px; align-items: center;'>
+    <div style="position: absolute; left: 10px; top: 10px; display: flex; gap: 10px; align-items: center;">
         <button id="theme-toggle" class="btn btn-sm btn-outline-secondary rounded-circle" onclick="toggleTheme()"
             title="Toggle Theme"
             style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center;">
             <i class="bi bi-moon-fill"></i>
         </button>
+    </div>
+    <!-- Language Selector aligned to right of the page-->
+    <div class="language-selector"
+        style='position: absolute; right: 5px; top: 1px; display: flex; gap: 10px; align-items: center;'>
         <select id="lang-select" class="form-select form-select-sm" onchange="setLanguage(this.value)"
             style="display:none;">
         </select>
