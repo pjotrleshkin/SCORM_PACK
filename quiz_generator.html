@@ -74,6 +74,20 @@
             gap: 10px;
             align-items: center;
         }
+
+        .fixed-language-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 4px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -120,11 +134,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Editing Language (Current View)</label>
-                                <select class="form-select" id="editor-language"
-                                    onchange="changeEditorLanguage(this.value)">
-                                    <!-- Populated by JS -->
-                                </select>
+
                             </div>
 
                             <div class="col-md-6">
@@ -230,6 +240,12 @@
         <button class="btn btn-dark rounded-pill" onclick="showJsonModal()">
             <i class="bi bi-code-slash me-2"></i>View JSON
         </button>
+    </div>
+    <div class="fixed-language-bar">
+        <!--  <label class="form-label">Editing Language (Current View)</label> -->
+        <select class="form-select" id="editor-language" onchange="changeEditorLanguage(this.value)">
+            <!-- Populated by JS -->
+        </select>
     </div>
 
     <!-- JSON MODAL -->
