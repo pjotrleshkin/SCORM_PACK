@@ -5,7 +5,8 @@
         "DISPLAY_NEEDED_POINTS": "If enabled, shows the points value next to each question and tells to user how many points were needed to pass on the result screen.",
         "DISPLAY_ATTEMPTS_COUNTER": "If enabled, displays the current attempt number (e.g., 'Attempt 1 of 3') to the user.",
         "COMMIT_ATTEMPT_ON_START": "If enabled, the attempt is counted as 'used' as soon as the quiz starts. If disabled, it attempt counts as 'used' only when finished.",
-        "defaultLanguage": "The language that will be selected by default when the quiz loads."
+        "defaultLanguage": "The language that will be selected by default when the quiz loads.",
+        "COMMENTS": "Optional field for adding notes, comments, or metadata about this quiz. This information is saved in the JSON file for future reference but is not displayed to quiz takers."
     },
     "media": {
         "logo": "Upload a logo image to be displayed at the top of the quiz interface. The filename will be saved in the JSON.",
@@ -16,9 +17,9 @@
         "type": "The format of the question. 'Description' is for informational text only (no points).",
         "points": "The number of points awarded for answering this question correctly.",
         "penalty": "Points deducted for each incorrect option selected (only for Multiple Choice).",
-        "question": "The main text of the question or the content for Description types.",
-        "options": "List of possible answers. Enter each option on a new line.",
-        "correct": "The correct answer(s). For Single/Boolean, it must match one option exactly. For Multiple, separate matches with commas.",
+        "question": "Enter the main text of the question or the content for Description types.",
+        "options": "List here the possible answers. Radio/Checkbox buttons define correct answer(s).",
+        "correct": "The correct answer(s).",
         "confirmLabel": "Text for the confirmation checkbox (e.g., 'I agree'). Only for Description type.",
         "blockNext": "If checked, the user cannot proceed to the next question until they check the confirmation box."
     }

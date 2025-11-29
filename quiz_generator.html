@@ -97,6 +97,15 @@
             align-items: center;
         }
 
+        #language-label {
+            color: grey;
+            font-size: 10px;
+        }
+
+        #translate-icon {
+            color: grey;
+        }
+
         /* Style for placeholder text to indicate it's from default language */
         input::placeholder,
         textarea::placeholder {
@@ -130,7 +139,7 @@
                 <!-- CONFIGURATION -->
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">1. Configuration</h5>
+                        <h5 class="mb-0">1. Quiz General Configuration</h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
@@ -161,7 +170,10 @@
                             </div>
 
                             <div class="col-md-6">
-
+                                <label class="form-label">Comments/Notes <i class="bi bi-info-circle info-btn"
+                                        data-guide-key="config.COMMENTS"></i></label>
+                                <input type="text" class="form-control" id="conf-comments"
+                                    placeholder="Add any notes or comments about this quiz...">
                             </div>
 
                             <div class="col-md-6">
@@ -255,10 +267,16 @@
         </button>
     </div>
     <div class="fixed-language-bar">
-        <!--  <label class="form-label">Editing Language (Current View)</label> -->
-        <select class="form-select" id="editor-language" onchange="changeEditorLanguage(this.value)">
-            <!-- Populated by JS -->
-        </select>
+        <div class="d-flex align-items-center gap-2">
+            <label class="form-label mb-0 text-white" style="font-size: 0.9rem;">
+                <i class="bi bi-translate me-1" id='translate-icon'></i>
+                <strong id='language-label'>Editing Language:</strong>
+            </label>
+            <select class="form-select form-select-sm" id="editor-language" onchange="changeEditorLanguage(this.value)"
+                style="width: auto; min-width: 120px;">
+                <!-- Populated by JS -->
+            </select>
+        </div>
     </div>
 
     <!-- JSON MODAL -->
@@ -315,7 +333,7 @@
                                 <i class="bi bi-arrow-down"></i>
                             </button>
                         </div>
-                        Question <span class="q-index"></span>
+                        Question&nbsp;<span class="q-index"></span>
                     </h5>
                     <span class="remove-btn">Remove</span>
                 </div>
@@ -397,6 +415,40 @@
         </div>
     </template>
 
+    <!-- VALIDATION WARNINGS MODAL -->
+    <div class="modal fade" id="validationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Validation Warnings
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">The following issues were found in your quiz data:</p>
+                    <div id="validation-errors-list" class="alert alert-light border"
+                        style="max-height: 400px; overflow-y: auto;">
+                        <!-- Errors will be populated here -->
+                    </div>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        You can proceed anyway, but it's recommended to fix these issues for a complete quiz.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-warning" id="proceed-anyway-btn">
+                        <i class="bi bi-check-circle me-1"></i>Proceed Anyway
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // INITIAL DATA (From source/quiz_data.json)
         const initialData = {
@@ -416,7 +468,8 @@
                 "DISPLAY_ATTEMPTS_COUNTER": true,
                 "PASS_PERCENTAGE": 80,
                 "DISPLAY_NEEDED_POINTS": true,
-                "COMMIT_ATTEMPT_ON_START": false
+                "COMMIT_ATTEMPT_ON_START": false,
+                "COMMENTS": ""
             },
             "questions": [
             ]
@@ -446,6 +499,9 @@
             zh: "中文"
         };
 
+        // Validation Modal
+        let validationModal = null;
+
         // DOM ELEMENTS
         const container = document.getElementById('questions-container');
         const template = document.getElementById('question-template');
@@ -459,6 +515,7 @@
             setupEventListeners();
             initializePopovers();
             jsonModal = new bootstrap.Modal(document.getElementById('jsonModal'));
+            validationModal = new bootstrap.Modal(document.getElementById('validationModal'));
         });
 
         async function loadGuide() {
@@ -497,7 +554,7 @@
 
         function setupEventListeners() {
             // Config inputs
-            document.querySelectorAll('#conf-title, #conf-max-attempts, #conf-pass-percentage, #conf-display-points, #conf-display-attempts, #conf-commit-start')
+            document.querySelectorAll('#conf-title, #conf-max-attempts, #conf-pass-percentage, #conf-display-points, #conf-display-attempts, #conf-commit-start, #conf-comments')
                 .forEach(el => el.addEventListener('input', updateGlobalDataFromUI));
 
             // Media inputs
@@ -802,7 +859,7 @@
             document.getElementById('conf-display-points').checked = globalQuizData.config.DISPLAY_NEEDED_POINTS;
             document.getElementById('conf-display-attempts').checked = globalQuizData.config.DISPLAY_ATTEMPTS_COUNTER;
             document.getElementById('conf-commit-start').checked = globalQuizData.config.COMMIT_ATTEMPT_ON_START;
-
+            document.getElementById('conf-comments').value = globalQuizData.config.COMMENTS || "";
             // Ensure dropdowns are in sync
             updateDropdowns();
 
@@ -977,7 +1034,7 @@
                 value="${newId}" onchange="updateQuestionDataFromUI(null, ${index})">
         </div>
         <input type="text" class="form-control opt-text" value="" 
-            placeholder="Option Text" oninput="updateQuestionDataFromUI(null, ${index})">
+            placeholder="Response Option Text" oninput="updateQuestionDataFromUI(null, ${index})">
         <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOptionRow(this, ${index})">
             <i class="bi bi-trash"></i>
         </button>
@@ -1023,6 +1080,7 @@
             globalQuizData.config.DISPLAY_NEEDED_POINTS = document.getElementById('conf-display-points').checked;
             globalQuizData.config.DISPLAY_ATTEMPTS_COUNTER = document.getElementById('conf-display-attempts').checked;
             globalQuizData.config.COMMIT_ATTEMPT_ON_START = document.getElementById('conf-commit-start').checked;
+            globalQuizData.config.COMMENTS = document.getElementById('conf-comments').value;
 
             generateJson();
         }
@@ -1276,7 +1334,100 @@
             document.body.removeChild(a);
         }
 
+        function validateQuizData() {
+            const langs = globalQuizData.config.languages;
+            const errors = [];
+
+            // 1. Check if title is defined for all active languages
+            langs.forEach(lang => {
+                const title = globalQuizData.config.TITLE;
+                if (!title || typeof title !== 'object' || !title[lang] || title[lang].trim() === '') {
+                    errors.push(`❌ Quiz Title: Missing for language "${lang.toUpperCase()}"`);
+                }
+            });
+
+            // 2. Check if comments field is empty
+            if (!globalQuizData.config.COMMENTS || globalQuizData.config.COMMENTS.trim() === '') {
+                errors.push(`⚠️ Comments/Notes: Field is empty (recommended to add notes for future reference)`);
+            }
+
+            // Check if there's at least one question
+            if (globalQuizData.questions.length === 0) {
+                errors.push("⚠️ No questions found. Add at least one question.");
+                return { valid: false, errors };
+            }
+
+            // Check each question
+            globalQuizData.questions.forEach((q, index) => {
+                const qNum = index + 1;
+
+                // Check question text for all active languages
+                langs.forEach(lang => {
+                    const qText = q.type === 'description' ? (q.content || q.question) : q.question;
+
+                    if (!qText || typeof qText !== 'object' || !qText[lang] || qText[lang].trim() === '') {
+                        errors.push(`❌ Question ${qNum}: Missing text for language "${lang.toUpperCase()}"`);
+                    }
+                });
+
+                // Check options for question types that have them
+                if (['single', 'multiple', 'boolean'].includes(q.type)) {
+                    if (!q.options || q.options.length === 0) {
+                        errors.push(`❌ Question ${qNum}: No options defined`);
+                    } else {
+                        // Check each option for all active languages
+                        q.options.forEach((opt, optIndex) => {
+                            langs.forEach(lang => {
+                                if (!opt.text || typeof opt.text !== 'object' || !opt.text[lang] || opt.text[lang].trim() === '') {
+                                    errors.push(`❌ Question ${qNum}, Option ${optIndex + 1}: Missing text for language "${lang.toUpperCase()}"`);
+                                }
+                            });
+                        });
+                    }
+
+                    // 3. Check if correct answer(s) are selected
+                    if (q.type === 'multiple') {
+                        if (!q.correctAnswer || !Array.isArray(q.correctAnswer) || q.correctAnswer.length === 0) {
+                            errors.push(`❌ Question ${qNum}: No correct answers selected (Multiple Choice requires at least one)`);
+                        }
+                    } else if (q.type === 'single' || q.type === 'boolean') {
+                        if (!q.correctAnswer || q.correctAnswer === '') {
+                            errors.push(`❌ Question ${qNum}: No correct answer selected`);
+                        }
+                    }
+                }
+            });
+
+            return { valid: errors.length === 0, errors };
+        }
+
         window.downloadScorm = function () {
+            // Validate quiz data before downloading
+            const validation = validateQuizData();
+
+            if (!validation.valid) {
+                // Show custom modal with errors
+                const errorsList = document.getElementById('validation-errors-list');
+                errorsList.innerHTML = '<ul class="mb-0">' +
+                    validation.errors.map(err => `<li class="mb-2">${err}</li>`).join('') +
+                    '</ul>';
+
+                // Set up the "Proceed Anyway" button
+                document.getElementById('proceed-anyway-btn').onclick = function () {
+                    validationModal.hide();
+                    // Continue with download
+                    proceedWithScormDownload();
+                };
+
+                validationModal.show();
+                return; // Stop here, wait for user decision
+            }
+
+            // If validation passed, proceed directly
+            proceedWithScormDownload();
+        }
+
+        function proceedWithScormDownload() {
             //get json data from jsonPreview
             var jsonData = jsonPreview.textContent;
 
@@ -1313,7 +1464,6 @@
                     alert('Error creating SCORM package: ' + xhr.status);
                 }
             };
-
         }
 
         function importJsonFromModal() {
