@@ -96,6 +96,25 @@
             gap: 10px;
             align-items: center;
         }
+
+        /* Style for placeholder text to indicate it's from default language */
+        input::placeholder,
+        textarea::placeholder {
+            color: #dc3545;
+            /* Bootstrap red color */
+            font-style: italic;
+            opacity: 0.7;
+        }
+
+        /* More specific styling for multilingual field placeholders */
+        .q-text::placeholder,
+        .opt-text::placeholder,
+        .q-confirm-label::placeholder,
+        #conf-title::placeholder {
+            color: #dc3545;
+            font-style: italic;
+            opacity: 0.8;
+        }
     </style>
 </head>
 
@@ -215,20 +234,6 @@
                     </div>
                 </div>
 
-                <!-- IMPORT JSON -->
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">Import JSON</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-label">Paste JSON here to import:</label>
-                            <textarea class="form-control" id="import-json-text" rows="3"></textarea>
-                        </div>
-                        <button class="btn btn-info text-white" onclick="importJson()">Import JSON</button>
-                    </div>
-                </div>
-
                 <!-- QUESTIONS -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3>3. Questions</h3>
@@ -266,8 +271,20 @@
                 </div>
                 <div class="modal-body">
                     <div class="preview-area" id="json-preview"></div>
+                    <div id="import-area" class="d-none">
+                        <label class="form-label">Paste JSON here to import:</label>
+                        <textarea class="form-control" id="import-json-text-modal" rows="15"
+                            style="font-family: monospace;"></textarea>
+                        <div class="mt-3 text-end">
+                            <button class="btn btn-success" onclick="importJsonFromModal()">Import & Load</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary me-auto" id="btn-toggle-import"
+                        onclick="toggleImportMode()">
+                        <i class="bi bi-box-arrow-in-down me-2"></i>Import JSON
+                    </button>
                     <button type="button" class="btn btn-secondary" onclick="copyToClipboard()">
                         <i class="bi bi-clipboard me-2"></i>Copy to Clipboard
                     </button>
@@ -335,6 +352,16 @@
                     </div>
 
                     <!-- DYNAMIC FIELDS -->
+                    <div class="col-12 q-interactive-options d-none">
+                        <label class="form-label">Options & Correct Answer <i class="bi bi-info-circle info-btn"
+                                data-guide-key="question.options"></i></label>
+                        <div class="options-list vstack gap-2">
+                            <!-- Options rendered here -->
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                            onclick="addOptionToQuestion(this)">+ Add Option</button>
+                    </div>
+
                     <div class="col-12 q-options-group">
                         <label class="form-label">Options (One per line) <i class="bi bi-info-circle info-btn"
                                 data-guide-key="question.options"></i></label>
@@ -392,296 +419,6 @@
                 "COMMIT_ATTEMPT_ON_START": false
             },
             "questions": [
-                {
-                    "id": 0,
-                    "type": "description",
-                    "points": 0,
-                    "question": {
-                        "en": "Confidentiality Agreement",
-                        "es": "Acuerdo de Confidencialidad",
-                        "de": "Vertraulichkeitsvereinbarung"
-                    },
-                    "content": {
-                        "en": "This assessment contains proprietary information. By proceeding, you agree not to share these questions or answers with colleagues. Failure to comply may result in disciplinary action.",
-                        "es": "Esta evaluación contiene información propietaria. Al continuar, usted acepta no compartir estas preguntas o respuestas con colegas. El incumplimiento puede resultar en medidas disciplinarias.",
-                        "de": "Diese Bewertung enthält geschützte Informationen. Wenn Sie fortfahren, erklären Sie sich damit einverstanden, diese Fragen oder Antworten nicht an Kollegen weiterzugeben. Bei Nichteinhaltung können Disziplinarmaßnahmen ergriffen werden."
-                    },
-                    "blockNext": true,
-                    "confirmLabel": {
-                        "en": "I have read and agree to the terms.",
-                        "es": "He leído y acepto los términos.",
-                        "de": "Ich habe die Bedingungen gelesen und stimme ihnen zu."
-                    }
-                },
-                {
-                    "id": 1,
-                    "type": "boolean",
-                    "points": 1,
-                    "question": {
-                        "en": "is inline css good practice?",
-                        "es": "¿es buena práctica el css en línea?",
-                        "de": "Ist Inline-CSS eine gute Praxis?"
-                    },
-                    "options": [
-                        {
-                            "id": "true",
-                            "text": {
-                                "en": "True",
-                                "es": "Verdadero",
-                                "de": "Wahr"
-                            }
-                        },
-                        {
-                            "id": "false",
-                            "text": {
-                                "en": "False",
-                                "es": "Falso",
-                                "de": "Falsch"
-                            }
-                        }
-                    ],
-                    "correctAnswer": "false"
-                },
-                {
-                    "id": 2,
-                    "type": "single",
-                    "points": 1,
-                    "question": {
-                        "en": "What implies that a variable cannot be reassigned in JavaScript?",
-                        "es": "¿Qué implica que una variable no puede ser reasignada en JavaScript?",
-                        "de": "Was bedeutet, dass eine Variable in JavaScript nicht neu zugewiesen werden kann?"
-                    },
-                    "options": [
-                        {
-                            "id": "var",
-                            "text": {
-                                "en": "var",
-                                "es": "var",
-                                "de": "var"
-                            }
-                        },
-                        {
-                            "id": "let",
-                            "text": {
-                                "en": "let",
-                                "es": "let",
-                                "de": "let"
-                            }
-                        },
-                        {
-                            "id": "const",
-                            "text": {
-                                "en": "const",
-                                "es": "const",
-                                "de": "const"
-                            }
-                        },
-                        {
-                            "id": "function",
-                            "text": {
-                                "en": "function",
-                                "es": "function",
-                                "de": "function"
-                            }
-                        }
-                    ],
-                    "correctAnswer": "const"
-                },
-                {
-                    "id": 3,
-                    "type": "multiple",
-                    "points": 1,
-                    "penalty": 0.33,
-                    "question": {
-                        "en": "Which of the following are valid HTTP methods?",
-                        "es": "¿Cuáles de los siguientes son métodos HTTP válidos?",
-                        "de": "Welche der folgenden sind gültige HTTP-Methoden?"
-                    },
-                    "options": [
-                        {
-                            "id": "get",
-                            "text": {
-                                "en": "GET",
-                                "es": "GET",
-                                "de": "GET"
-                            }
-                        },
-                        {
-                            "id": "post",
-                            "text": {
-                                "en": "POST",
-                                "es": "POST",
-                                "de": "POST"
-                            }
-                        },
-                        {
-                            "id": "jump",
-                            "text": {
-                                "en": "JUMP",
-                                "es": "JUMP",
-                                "de": "JUMP"
-                            }
-                        },
-                        {
-                            "id": "delete",
-                            "text": {
-                                "en": "DELETE",
-                                "es": "DELETE",
-                                "de": "DELETE"
-                            }
-                        },
-                        {
-                            "id": "stop",
-                            "text": {
-                                "en": "STOP",
-                                "es": "STOP",
-                                "de": "STOP"
-                            }
-                        }
-                    ],
-                    "correctAnswer": [
-                        "get",
-                        "post",
-                        "delete"
-                    ]
-                },
-                {
-                    "id": 4,
-                    "type": "boolean",
-                    "points": 1,
-                    "question": {
-                        "en": "HTML is a programming language.",
-                        "es": "HTML es un lenguaje de programación.",
-                        "de": "HTML ist eine Programmiersprache."
-                    },
-                    "options": [
-                        {
-                            "id": "true",
-                            "text": {
-                                "en": "True",
-                                "es": "Verdadero",
-                                "de": "Wahr"
-                            }
-                        },
-                        {
-                            "id": "false",
-                            "text": {
-                                "en": "False",
-                                "es": "Falso",
-                                "de": "Falsch"
-                            }
-                        }
-                    ],
-                    "correctAnswer": "false"
-                },
-                {
-                    "id": 5,
-                    "type": "text",
-                    "points": 5,
-                    "question": {
-                        "en": "Type a keyword used to return a value from a function.",
-                        "es": "Escribe una palabra clave usada para devolver un valor de una función.",
-                        "de": "Geben Sie ein Schlüsselwort ein, das verwendet wird, um einen Wert aus einer Funktion zurückzugeben."
-                    },
-                    "options": [],
-                    "correctAnswer": [
-                        "return",
-                        "yield"
-                    ]
-                },
-                {
-                    "id": 6,
-                    "type": "fill-blank",
-                    "points": 3,
-                    "question": {
-                        "en": "The {{BLANK}} tag is used to define a hyperlink.",
-                        "es": "La etiqueta {{BLANK}} se usa para definir un hipervínculo.",
-                        "de": "Das {{BLANK}}-Tag wird verwendet, um einen Hyperlink zu definieren."
-                    },
-                    "options": [
-                        {
-                            "id": "link",
-                            "text": {
-                                "en": "&lt;link&gt;",
-                                "es": "&lt;link&gt;",
-                                "de": "&lt;link&gt;"
-                            }
-                        },
-                        {
-                            "id": "a",
-                            "text": {
-                                "en": "&lt;a&gt;",
-                                "es": "&lt;a&gt;",
-                                "de": "&lt;a&gt;"
-                            }
-                        },
-                        {
-                            "id": "href",
-                            "text": {
-                                "en": "&lt;href&gt;",
-                                "es": "&lt;href&gt;",
-                                "de": "&lt;href&gt;"
-                            }
-                        }
-                    ],
-                    "correctAnswer": "a"
-                },
-                {
-                    "id": 7,
-                    "type": "drag-drop-text",
-                    "points": 5,
-                    "question": {
-                        "en": "The {{1}} is the largest planet in our solar system, while {{2}} is known as the Red Planet.",
-                        "es": "El {{1}} es el planeta más grande de nuestro sistema solar, mientras que {{2}} es conocido como el Planeta Rojo.",
-                        "de": "Der {{1}} ist der größte Planet in unserem Sonnensystem, während {{2}} als der Rote Planet bekannt ist."
-                    },
-                    "options": [
-                        {
-                            "id": "jupiter",
-                            "text": {
-                                "en": "Jupiter",
-                                "es": "Júpiter",
-                                "de": "Jupiter"
-                            }
-                        },
-                        {
-                            "id": "mars",
-                            "text": {
-                                "en": "Mars",
-                                "es": "Marte",
-                                "de": "Mars"
-                            }
-                        },
-                        {
-                            "id": "earth",
-                            "text": {
-                                "en": "Earth",
-                                "es": "Tierra",
-                                "de": "Erde"
-                            }
-                        },
-                        {
-                            "id": "venus",
-                            "text": {
-                                "en": "Venus",
-                                "es": "Venus",
-                                "de": "Venus"
-                            }
-                        },
-                        {
-                            "id": "saturn",
-                            "text": {
-                                "en": "Saturn",
-                                "es": "Saturno",
-                                "de": "Saturn"
-                            }
-                        }
-                    ],
-                    "correctAnswer": {
-                        "1": "jupiter",
-                        "2": "mars"
-                    }
-                }
             ]
         };
 
@@ -832,10 +569,26 @@
         }
 
         // Helper to get text for current language
-        function getLangText(obj) {
+        function getLangText(obj, allowFallback = true) {
             if (typeof obj === 'string') return obj;
             if (!obj) return "";
-            return obj[currentEditorLanguage] || obj['en'] || Object.values(obj)[0] || "";
+
+            // For editor UI, we want to show empty if current language is empty
+            // For quiz runtime, we want fallback to other languages
+            if (allowFallback) {
+                return obj[currentEditorLanguage] || obj['en'] || Object.values(obj)[0] || "";
+            } else {
+                // No fallback - return exactly what's in current language (even if empty)
+                return obj[currentEditorLanguage] || "";
+            }
+        }
+        // Helper to get placeholder text from default language
+        function getPlaceholderText(obj) {
+            if (typeof obj === 'string') return "";
+            if (!obj) return "";
+
+            const defaultLang = globalQuizData.config.defaultLanguage || 'en';
+            return obj[defaultLang] || "";
         }
 
         // Helper to set text for current language
@@ -894,15 +647,88 @@
             let langs = globalQuizData.config.languages;
 
             if (isChecked) {
-                if (!langs.includes(code)) langs.push(code);
+                // Adding a new language
+                if (!langs.includes(code)) {
+                    langs.push(code);
+
+                    // Initialize empty strings for this language across all multilingual fields
+
+                    // 1. Initialize TITLE
+                    if (typeof globalQuizData.config.TITLE === 'object') {
+                        globalQuizData.config.TITLE[code] = "";
+                    }
+
+                    // 2. Initialize all questions
+                    globalQuizData.questions.forEach(q => {
+                        // Question text
+                        if (q.question && typeof q.question === 'object') {
+                            q.question[code] = "";
+                        }
+
+                        // Content (for description type)
+                        if (q.content && typeof q.content === 'object') {
+                            q.content[code] = "";
+                        }
+
+                        // Confirm label (for description type)
+                        if (q.confirmLabel && typeof q.confirmLabel === 'object') {
+                            q.confirmLabel[code] = "";
+                        }
+
+                        // Options
+                        if (q.options && Array.isArray(q.options)) {
+                            q.options.forEach(opt => {
+                                if (typeof opt === 'object' && opt.text && typeof opt.text === 'object') {
+                                    opt.text[code] = "";
+                                }
+                            });
+                        }
+                    });
+                }
             } else {
+                // Removing a language
                 // Prevent removing the last language
                 if (langs.length <= 1) {
                     alert("At least one language must be selected.");
                     document.getElementById(`lang-${code}`).checked = true;
                     return;
                 }
+
                 langs = langs.filter(l => l !== code);
+
+                // Remove this language from all multilingual fields
+
+                // 1. Remove from TITLE
+                if (typeof globalQuizData.config.TITLE === 'object') {
+                    delete globalQuizData.config.TITLE[code];
+                }
+
+                // 2. Remove from all questions
+                globalQuizData.questions.forEach(q => {
+                    // Question text
+                    if (q.question && typeof q.question === 'object') {
+                        delete q.question[code];
+                    }
+
+                    // Content (for description type)
+                    if (q.content && typeof q.content === 'object') {
+                        delete q.content[code];
+                    }
+
+                    // Confirm label (for description type)
+                    if (q.confirmLabel && typeof q.confirmLabel === 'object') {
+                        delete q.confirmLabel[code];
+                    }
+
+                    // Options
+                    if (q.options && Array.isArray(q.options)) {
+                        q.options.forEach(opt => {
+                            if (typeof opt === 'object' && opt.text && typeof opt.text === 'object') {
+                                delete opt.text[code];
+                            }
+                        });
+                    }
+                });
             }
 
             globalQuizData.config.languages = langs;
@@ -918,9 +744,9 @@
             }
 
             updateDropdowns();
+            renderUI(); // Re-render UI to reflect changes
             generateJson();
         }
-
         function updateDefaultLanguage(val) {
             globalQuizData.config.defaultLanguage = val;
             generateJson();
@@ -963,7 +789,14 @@
 
         function renderUI() {
             // Config
-            document.getElementById('conf-title').value = getLangText(globalQuizData.config.TITLE);
+            const titleElement = document.getElementById('conf-title');
+            const titleText = getLangText(globalQuizData.config.TITLE, false);
+            titleElement.value = titleText;
+            if (!titleText) {
+                titleElement.placeholder = getPlaceholderText(globalQuizData.config.TITLE);
+            } else {
+                titleElement.placeholder = "";
+            }
             document.getElementById('conf-max-attempts').value = globalQuizData.config.MAX_ATTEMPTS;
             document.getElementById('conf-pass-percentage').value = globalQuizData.config.PASS_PERCENTAGE;
             document.getElementById('conf-display-points').checked = globalQuizData.config.DISPLAY_NEEDED_POINTS;
@@ -991,7 +824,15 @@
             card.querySelector('.q-points').value = data.points;
 
             const qText = data.type === 'description' ? (data.content || data.question) : data.question;
-            card.querySelector('.q-text').value = getLangText(qText);
+            const qTextElement = card.querySelector('.q-text');
+            const currentText = getLangText(qText, false); // No fallback
+            qTextElement.value = currentText;
+            if (!currentText) {
+                // If current language is empty, show default language as placeholder
+                qTextElement.placeholder = getPlaceholderText(qText);
+            } else {
+                qTextElement.placeholder = "";
+            }
 
             if (data.penalty) card.querySelector('.q-penalty').value = data.penalty;
 
@@ -1019,18 +860,136 @@
             }
 
             if (data.type === 'description') {
-                card.querySelector('.q-confirm-label').value = getLangText(data.confirmLabel);
+                const confirmElement = card.querySelector('.q-confirm-label');
+                const confirmText = getLangText(data.confirmLabel, false);
+                confirmElement.value = confirmText;
+                if (!confirmText) {
+                    confirmElement.placeholder = getPlaceholderText(data.confirmLabel);
+                } else {
+                    confirmElement.placeholder = "I confirm"; // Default placeholder
+                }
                 card.querySelector('.q-block-next').checked = data.blockNext || false;
+            }
+
+            // Render interactive options if applicable
+            if (['single', 'multiple', 'boolean'].includes(data.type)) {
+                renderInteractiveOptions(card, data, index);
             }
 
             // Attach listeners
             card.querySelectorAll('input, select, textarea').forEach(el => {
-                el.addEventListener('input', (e) => updateQuestionDataFromUI(e, index));
+                // Skip inputs inside options-list as they are handled dynamically or need specific listeners
+                if (!el.closest('.options-list')) {
+                    el.addEventListener('input', (e) => updateQuestionDataFromUI(e, index));
+                }
             });
 
             container.appendChild(card);
             initializePopovers(card);
             updateTypeUI(card.querySelector('.q-type'));
+        }
+
+        function renderInteractiveOptions(card, data, index) {
+            const list = card.querySelector('.options-list');
+            list.innerHTML = '';
+
+            const isMultiple = data.type === 'multiple';
+            const inputType = isMultiple ? 'checkbox' : 'radio';
+            const name = `q_${index}_correct`; // Unique name for radios per question
+
+            // Ensure options exist
+            const options = data.options || [];
+
+            options.forEach((opt, optIndex) => {
+                const row = document.createElement('div');
+                row.className = 'd-flex align-items-center gap-2 option-row';
+
+                // Determine if checked
+                let isChecked = false;
+                const optId = opt.id || opt; // Handle string options if any legacy
+
+                if (isMultiple) {
+                    if (Array.isArray(data.correctAnswer) && data.correctAnswer.includes(optId)) {
+                        isChecked = true;
+                    }
+                } else {
+                    if (data.correctAnswer === optId) {
+                        isChecked = true;
+                    }
+                }
+
+                const optText = typeof opt === 'object' ? getLangText(opt.text, false) : opt;
+                const optPlaceholder = (typeof opt === 'object' && !optText) ? getPlaceholderText(opt.text) : "Response";
+
+                row.innerHTML = `
+    <div class="form-check mb-0">
+        <input class="form-check-input opt-correct" type="${inputType}" name="${name}" 
+            value="${optId}" ${isChecked ? 'checked' : ''} onchange="updateQuestionDataFromUI(null, ${index})">
+    </div>
+    <input type="text" class="form-control opt-text" value="${optText}" 
+        placeholder="${optPlaceholder}" oninput="updateQuestionDataFromUI(null, ${index})">
+    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOptionRow(this, ${index})">
+        <i class="bi bi-trash"></i>
+    </button>
+`;
+                list.appendChild(row);
+            });
+        }
+
+        function addOptionToQuestion(btn) {
+            const card = btn.closest('.question-card');
+            const index = Array.from(container.children).indexOf(card);
+            const list = card.querySelector('.options-list');
+
+            // Create new option data
+            var newId = "opt_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5);
+
+            // Initialize new option in global data to ensure all languages are present
+            if (!globalQuizData.questions[index].options) {
+                globalQuizData.questions[index].options = [];
+            }
+
+            const newOption = {
+                id: newId,
+                text: {}
+            };
+
+            // Initialize empty strings for all supported languages
+            const supportedLanguages = globalQuizData.config.languages || ['en'];
+            supportedLanguages.forEach(lang => {
+                newOption.text[lang] = "";
+            });
+
+            globalQuizData.questions[index].options.push(newOption);
+
+            // Add to UI
+            const row = document.createElement('div');
+            row.className = 'd-flex align-items-center gap-2 option-row';
+
+            const type = card.querySelector('.q-type').value;
+            const isMultiple = type === 'multiple';
+            const inputType = isMultiple ? 'checkbox' : 'radio';
+            const name = `q_${index}_correct`;
+
+            row.innerHTML = `
+        <div class="form-check mb-0">
+            <input class="form-check-input opt-correct" type="${inputType}" name="${name}" 
+                value="${newId}" onchange="updateQuestionDataFromUI(null, ${index})">
+        </div>
+        <input type="text" class="form-control opt-text" value="" 
+            placeholder="Option Text" oninput="updateQuestionDataFromUI(null, ${index})">
+        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOptionRow(this, ${index})">
+            <i class="bi bi-trash"></i>
+        </button>
+    `;
+            list.appendChild(row);
+
+            // Trigger update to save the new empty option to data
+            updateQuestionDataFromUI(null, index);
+        }
+        function removeOptionRow(btn, index) {
+            btn.closest('.option-row').remove();
+            updateQuestionDataFromUI(null, index);
         }
 
         function addQuestion() {
@@ -1095,7 +1054,47 @@
             }
 
             // Options
-            if (q.type !== 'text' && q.type !== 'description') {
+            if (['single', 'multiple', 'boolean'].includes(q.type)) {
+                // Read from interactive list
+                // IMPORTANT: Save existing options first to preserve all language data
+                const existingOptions = q.options || [];
+                q.options = [];
+                const rows = card.querySelectorAll('.option-row');
+                const correctIds = [];
+
+                rows.forEach(row => {
+                    const textInput = row.querySelector('.opt-text');
+                    const correctInput = row.querySelector('.opt-correct');
+                    const id = correctInput.value; // We stored ID in value
+
+                    // Construct option object
+                    const optObj = { id: id, text: {} };
+
+                    // Preserve other languages - find in SAVED array (not the emptied q.options)
+                    const existingOpt = existingOptions.find(o => (o.id || o) === id);
+
+                    if (existingOpt && typeof existingOpt === 'object' && existingOpt.text) {
+                        // Copy all existing language entries
+                        optObj.text = { ...existingOpt.text };
+                    }
+                    // Update/add the current language
+                    optObj.text[currentEditorLanguage] = textInput.value;
+
+                    q.options.push(optObj);
+
+                    if (correctInput.checked) {
+                        correctIds.push(id);
+                    }
+                });
+
+                // Set Correct Answer
+                if (q.type === 'multiple') {
+                    q.correctAnswer = correctIds;
+                } else {
+                    q.correctAnswer = correctIds.length > 0 ? correctIds[0] : "";
+                }
+
+            } else if (q.type !== 'text' && q.type !== 'description') {
                 const rawOpts = card.querySelector('.q-options').value.split('\n');
                 // We need to sync this with q.options array
                 // Strategy: Resize q.options to match rawOpts length.
@@ -1124,24 +1123,28 @@
                         q.options[i].text[currentEditorLanguage] = val;
                     }
                 });
+
+                // Correct Answer for non-interactive types (drag-drop, fill-blank)
+                const rawCorrect = card.querySelector('.q-correct').value;
+                try {
+                    if (rawCorrect.trim().startsWith('{')) {
+                        q.correctAnswer = JSON.parse(rawCorrect);
+                    } else {
+                        q.correctAnswer = rawCorrect;
+                    }
+                } catch (e) {
+                    q.correctAnswer = rawCorrect;
+                }
+
             } else {
                 q.options = [];
-            }
-
-            // Correct Answer
-            const rawCorrect = card.querySelector('.q-correct').value;
-            try {
-                // Try parsing as JSON first (for drag-drop object)
-                if (rawCorrect.trim().startsWith('{')) {
-                    q.correctAnswer = JSON.parse(rawCorrect);
-                } else if (q.type === 'multiple' || (q.type === 'text' && rawCorrect.includes(','))) {
+                // Text type correct answer
+                const rawCorrect = card.querySelector('.q-correct').value;
+                if (q.type === 'text' && rawCorrect.includes(',')) {
                     q.correctAnswer = rawCorrect.split(',').map(s => s.trim());
                 } else {
                     q.correctAnswer = rawCorrect;
                 }
-            } catch (e) {
-                // Fallback to string if JSON parse fails
-                q.correctAnswer = rawCorrect;
             }
 
             // Description specific
@@ -1169,6 +1172,7 @@
             const penaltyGroup = card.querySelector('.q-penalty-group');
             const optionsGroup = card.querySelector('.q-options-group');
             const correctGroup = card.querySelector('.q-correct-group');
+            const interactiveGroup = card.querySelector('.q-interactive-options');
             const descGroup = card.querySelector('.q-desc-group');
             const textLabel = card.querySelector('.q-text').previousElementSibling;
 
@@ -1176,8 +1180,21 @@
             penaltyGroup.classList.add('d-none');
             optionsGroup.classList.remove('d-none');
             correctGroup.classList.remove('d-none');
+            interactiveGroup.classList.add('d-none');
             descGroup.classList.add('d-none');
             textLabel.textContent = "Question Text";
+
+            if (['single', 'multiple', 'boolean'].includes(type)) {
+                optionsGroup.classList.add('d-none');
+                correctGroup.classList.add('d-none');
+                interactiveGroup.classList.remove('d-none');
+
+                // Re-render interactive options because type change might require radio <-> checkbox switch
+                const index = Array.from(container.children).indexOf(card.closest('.question-card'));
+                if (index !== -1 && globalQuizData.questions[index]) {
+                    renderInteractiveOptions(card.closest('.question-card'), globalQuizData.questions[index], index);
+                }
+            }
 
             if (type === 'multiple') {
                 penaltyGroup.classList.remove('d-none');
@@ -1186,6 +1203,7 @@
             } else if (type === 'description') {
                 optionsGroup.classList.add('d-none');
                 correctGroup.classList.add('d-none');
+                interactiveGroup.classList.add('d-none');
                 penaltyGroup.classList.add('d-none');
                 descGroup.classList.remove('d-none');
                 textLabel.textContent = "Content (HTML allowed)";
@@ -1205,7 +1223,35 @@
 
         window.showJsonModal = function () {
             if (jsonModal) {
+                // Reset to view mode
+                document.getElementById('json-preview').classList.remove('d-none');
+                document.getElementById('import-area').classList.add('d-none');
+                document.getElementById('btn-toggle-import').innerHTML = '<i class="bi bi-box-arrow-in-down me-2"></i>Import JSON';
+
+                // Update preview
+                generateJson();
+
                 jsonModal.show();
+            }
+        }
+
+        window.toggleImportMode = function () {
+            const preview = document.getElementById('json-preview');
+            const importArea = document.getElementById('import-area');
+            const btn = document.getElementById('btn-toggle-import');
+
+            if (importArea.classList.contains('d-none')) {
+                // Switch to Import Mode
+                preview.classList.add('d-none');
+                importArea.classList.remove('d-none');
+                btn.textContent = "Cancel Import";
+                document.getElementById('import-json-text-modal').value = "";
+                document.getElementById('import-json-text-modal').focus();
+            } else {
+                // Switch back to View Mode
+                preview.classList.remove('d-none');
+                importArea.classList.add('d-none');
+                btn.innerHTML = '<i class="bi bi-box-arrow-in-down me-2"></i>Import JSON';
             }
         }
 
@@ -1270,14 +1316,15 @@
 
         }
 
-        function importJson() {
+        function importJsonFromModal() {
             try {
-                const jsonText = document.getElementById('import-json-text').value;
+                const jsonText = document.getElementById('import-json-text-modal').value;
                 const data = JSON.parse(jsonText);
 
                 if (data.config && data.questions) {
                     loadFromData(data);
                     alert('JSON imported successfully!');
+                    jsonModal.hide();
                 } else {
                     alert('Invalid JSON format: Missing config or questions.');
                 }

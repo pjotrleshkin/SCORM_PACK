@@ -1,10 +1,11 @@
 {
     "config": {
-        "MAX_ATTEMPTS": "The maximum number of times a user is allowed to attempt the quiz. Set to 0 for unlimited (if supported by logic, otherwise usually 999).",
+        "MAX_ATTEMPTS": "The maximum number of times a user is allowed to attempt the quiz. Set to 999 for unlimited attempts.",
         "PASS_PERCENTAGE": "The minimum percentage score required to pass the assessment (0-100).",
-        "DISPLAY_NEEDED_POINTS": "If enabled, shows the points value next to each question and calculates points needed to pass on the result screen.",
+        "DISPLAY_NEEDED_POINTS": "If enabled, shows the points value next to each question and tells to user how many points were needed to pass on the result screen.",
         "DISPLAY_ATTEMPTS_COUNTER": "If enabled, displays the current attempt number (e.g., 'Attempt 1 of 3') to the user.",
-        "COMMIT_ATTEMPT_ON_START": "If enabled, the attempt is counted as soon as the quiz starts. If disabled, it counts only when finished."
+        "COMMIT_ATTEMPT_ON_START": "If enabled, the attempt is counted as 'used' as soon as the quiz starts. If disabled, it attempt counts as 'used' only when finished.",
+        "defaultLanguage": "The language that will be selected by default when the quiz loads."
     },
     "media": {
         "logo": "Upload a logo image to be displayed at the top of the quiz interface. The filename will be saved in the JSON.",
