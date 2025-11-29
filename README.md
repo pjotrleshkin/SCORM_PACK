@@ -5,11 +5,9 @@ A web-based tool for creating SCORM 1.2 compliant assessment packages. This proj
 ## Map for future development
 
 ### quiz_generator.html
-    - [ ] fix info button next to default language
-    - [ ] add info button next to supported languages (and description,how languages work) 
-    - [ ] add check for empty questions (in all selected languages) before generating the package
-    - [ ] add alert message
-    - [ ] add modal with list of empty questions
+    - [ ] make better ui for drag and drop 
+    - [ ] make better ui for fill in the blank
+    - [ ] limit true false to 2 options (yes/no, in all languages)
 
 ### test jsons
     - [ ] create test jsons with new structure

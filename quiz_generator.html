@@ -339,18 +339,23 @@
                 </div>
 
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="form-label">Type <i class="bi bi-info-circle info-btn"
                                 data-guide-key="question.type"></i></label>
-                        <select class="form-select q-type" onchange="updateTypeUI(this)">
-                            <option value="single">Single Choice</option>
-                            <option value="multiple">Multiple Choice</option>
-                            <option value="boolean">True/False</option>
-                            <option value="text">Text Input</option>
-                            <option value="fill-blank">Fill in Blank</option>
-                            <option value="drag-drop-text">Drag & Drop Text</option>
-                            <option value="description">Description (Info)</option>
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-text q-type-icon">
+                                <i class="bi bi-1-circle"></i>
+                            </span>
+                            <select class="form-select q-type" onchange="updateTypeUI(this)">
+                                <option value="single">Single Choice</option>
+                                <option value="multiple">Multiple Choice</option>
+                                <option value="boolean">True/False</option>
+                                <option value="text">Free Text</option>
+                                <option value="drag-drop-text">Drag and Drop</option>
+                                <option value="fill-blank">Fill in the Blank</option>
+                                <option value="description">Description</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Points <i class="bi bi-info-circle info-btn"
@@ -1224,8 +1229,28 @@
         }
 
         window.updateTypeUI = function (select) {
+
+
             const card = select.closest('.card-body');
             const type = select.value;
+
+            // Update the icon based on type
+            const iconSpan = card.querySelector('.q-type-icon i');
+            if (iconSpan) {
+                const icons = {
+                    'single': 'bi-1-circle',
+                    'multiple': 'bi-list-ol',
+                    'boolean': 'bi-hand-thumbs-up',
+                    'text': 'bi-type',
+                    'drag-drop-text': 'bi-grip-horizontal',
+                    'fill-blank': 'bi-input-cursor-text',
+                    'description': 'bi-info-circle'
+                };
+
+                // Remove all icon classes and add the new one
+                iconSpan.className = `bi ${icons[type] || 'bi-question-circle'}`;
+            }
+
 
             const penaltyGroup = card.querySelector('.q-penalty-group');
             const optionsGroup = card.querySelector('.q-options-group');
