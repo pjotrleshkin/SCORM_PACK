@@ -6,7 +6,8 @@
         "DISPLAY_ATTEMPTS_COUNTER": "If enabled, displays the current attempt number (e.g., 'Attempt 1 of 3') to the user.",
         "COMMIT_ATTEMPT_ON_START": "If enabled, the attempt is counted as 'used' as soon as the quiz starts. If disabled, it attempt counts as 'used' only when finished.",
         "defaultLanguage": "The language that will be selected by default when the quiz loads.",
-        "COMMENTS": "Optional field for adding notes, comments, or metadata about this quiz. This information is saved in the JSON file for future reference but is not displayed to quiz takers."
+        "COMMENTS": "Optional field for adding notes, comments, or metadata about this quiz. This information is saved in the JSON file for future reference but is not displayed to quiz takers.",
+        "THEME": "Sets the default theme for the quiz. When enabled (dark), the quiz will load in dark mode. Users can still toggle the theme manually."
     },
     "media": {
         "logo": "Upload a logo image to be displayed at the top of the quiz interface. The filename will be saved in the JSON.",

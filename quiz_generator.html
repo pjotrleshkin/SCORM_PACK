@@ -139,7 +139,7 @@
                 <!-- CONFIGURATION -->
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">1. Quiz General Configuration</h5>
+                        <h5 class="mb-0">1. Configuration</h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
@@ -202,12 +202,19 @@
                                             data-guide-key="config.DISPLAY_ATTEMPTS_COUNTER"></i></label>
                                 </div>
                             </div>
-                            <div class="col-md-12">
-                                <div class="form-check form-switch">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mt-4">
                                     <input class="form-check-input" type="checkbox" id="conf-commit-start">
                                     <label class="form-check-label">Commit Attempt on Start <i
                                             class="bi bi-info-circle info-btn"
                                             data-guide-key="config.COMMIT_ATTEMPT_ON_START"></i></label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mt-4">
+                                    <input class="form-check-input" type="checkbox" id="conf-theme">
+                                    <label class="form-check-label">Dark Theme <i class="bi bi-info-circle info-btn"
+                                            data-guide-key="config.THEME"></i></label>
                                 </div>
                             </div>
                         </div>
@@ -333,29 +340,24 @@
                                 <i class="bi bi-arrow-down"></i>
                             </button>
                         </div>
-                        Question&nbsp;<span class="q-index"></span>
+                        Question <span class="q-index"></span>
                     </h5>
                     <span class="remove-btn">Remove</span>
                 </div>
 
                 <div class="row g-3">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label">Type <i class="bi bi-info-circle info-btn"
                                 data-guide-key="question.type"></i></label>
-                        <div class="input-group">
-                            <span class="input-group-text q-type-icon">
-                                <i class="bi bi-1-circle"></i>
-                            </span>
-                            <select class="form-select q-type" onchange="updateTypeUI(this)">
-                                <option value="single">Single Choice</option>
-                                <option value="multiple">Multiple Choice</option>
-                                <option value="boolean">True/False</option>
-                                <option value="text">Free Text</option>
-                                <option value="drag-drop-text">Drag and Drop</option>
-                                <option value="fill-blank">Fill in the Blank</option>
-                                <option value="description">Description</option>
-                            </select>
-                        </div>
+                        <select class="form-select q-type" onchange="updateTypeUI(this)">
+                            <option value="single">Single Choice</option>
+                            <option value="multiple">Multiple Choice</option>
+                            <option value="boolean">True/False</option>
+                            <option value="text">Text Input</option>
+                            <option value="fill-blank">Fill in Blank</option>
+                            <option value="drag-drop-text">Drag & Drop Text</option>
+                            <option value="description">Description (Info)</option>
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Points <i class="bi bi-info-circle info-btn"
@@ -420,40 +422,6 @@
         </div>
     </template>
 
-    <!-- VALIDATION WARNINGS MODAL -->
-    <div class="modal fade" id="validationModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        Validation Warnings
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-3">The following issues were found in your quiz data:</p>
-                    <div id="validation-errors-list" class="alert alert-light border"
-                        style="max-height: 400px; overflow-y: auto;">
-                        <!-- Errors will be populated here -->
-                    </div>
-                    <p class="text-muted mb-0">
-                        <i class="bi bi-info-circle me-1"></i>
-                        You can proceed anyway, but it's recommended to fix these issues for a complete quiz.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-1"></i>Cancel
-                    </button>
-                    <button type="button" class="btn btn-warning" id="proceed-anyway-btn">
-                        <i class="bi bi-check-circle me-1"></i>Proceed Anyway
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         // INITIAL DATA (From source/quiz_data.json)
         const initialData = {
@@ -474,7 +442,8 @@
                 "PASS_PERCENTAGE": 80,
                 "DISPLAY_NEEDED_POINTS": true,
                 "COMMIT_ATTEMPT_ON_START": false,
-                "COMMENTS": ""
+                "COMMENTS": "",
+                "THEME": "light"
             },
             "questions": [
             ]
@@ -504,9 +473,6 @@
             zh: "中文"
         };
 
-        // Validation Modal
-        let validationModal = null;
-
         // DOM ELEMENTS
         const container = document.getElementById('questions-container');
         const template = document.getElementById('question-template');
@@ -520,7 +486,6 @@
             setupEventListeners();
             initializePopovers();
             jsonModal = new bootstrap.Modal(document.getElementById('jsonModal'));
-            validationModal = new bootstrap.Modal(document.getElementById('validationModal'));
         });
 
         async function loadGuide() {
@@ -559,7 +524,7 @@
 
         function setupEventListeners() {
             // Config inputs
-            document.querySelectorAll('#conf-title, #conf-max-attempts, #conf-pass-percentage, #conf-display-points, #conf-display-attempts, #conf-commit-start, #conf-comments')
+            document.querySelectorAll('#conf-title, #conf-max-attempts, #conf-pass-percentage, #conf-display-points, #conf-display-attempts, #conf-commit-start, #conf-theme, #conf-comments')
                 .forEach(el => el.addEventListener('input', updateGlobalDataFromUI));
 
             // Media inputs
@@ -864,6 +829,7 @@
             document.getElementById('conf-display-points').checked = globalQuizData.config.DISPLAY_NEEDED_POINTS;
             document.getElementById('conf-display-attempts').checked = globalQuizData.config.DISPLAY_ATTEMPTS_COUNTER;
             document.getElementById('conf-commit-start').checked = globalQuizData.config.COMMIT_ATTEMPT_ON_START;
+            document.getElementById('conf-theme').checked = globalQuizData.config.THEME === 'dark';
             document.getElementById('conf-comments').value = globalQuizData.config.COMMENTS || "";
             // Ensure dropdowns are in sync
             updateDropdowns();
@@ -1085,6 +1051,7 @@
             globalQuizData.config.DISPLAY_NEEDED_POINTS = document.getElementById('conf-display-points').checked;
             globalQuizData.config.DISPLAY_ATTEMPTS_COUNTER = document.getElementById('conf-display-attempts').checked;
             globalQuizData.config.COMMIT_ATTEMPT_ON_START = document.getElementById('conf-commit-start').checked;
+            globalQuizData.config.THEME = document.getElementById('conf-theme').checked ? 'dark' : 'light';
             globalQuizData.config.COMMENTS = document.getElementById('conf-comments').value;
 
             generateJson();
@@ -1229,28 +1196,8 @@
         }
 
         window.updateTypeUI = function (select) {
-
-
             const card = select.closest('.card-body');
             const type = select.value;
-
-            // Update the icon based on type
-            const iconSpan = card.querySelector('.q-type-icon i');
-            if (iconSpan) {
-                const icons = {
-                    'single': 'bi-1-circle',
-                    'multiple': 'bi-list-ol',
-                    'boolean': 'bi-hand-thumbs-up',
-                    'text': 'bi-type',
-                    'drag-drop-text': 'bi-grip-horizontal',
-                    'fill-blank': 'bi-input-cursor-text',
-                    'description': 'bi-info-circle'
-                };
-
-                // Remove all icon classes and add the new one
-                iconSpan.className = `bi ${icons[type] || 'bi-question-circle'}`;
-            }
-
 
             const penaltyGroup = card.querySelector('.q-penalty-group');
             const optionsGroup = card.querySelector('.q-options-group');
@@ -1363,19 +1310,6 @@
             const langs = globalQuizData.config.languages;
             const errors = [];
 
-            // 1. Check if title is defined for all active languages
-            langs.forEach(lang => {
-                const title = globalQuizData.config.TITLE;
-                if (!title || typeof title !== 'object' || !title[lang] || title[lang].trim() === '') {
-                    errors.push(`❌ Quiz Title: Missing for language "${lang.toUpperCase()}"`);
-                }
-            });
-
-            // 2. Check if comments field is empty
-            if (!globalQuizData.config.COMMENTS || globalQuizData.config.COMMENTS.trim() === '') {
-                errors.push(`⚠️ Comments/Notes: Field is empty (recommended to add notes for future reference)`);
-            }
-
             // Check if there's at least one question
             if (globalQuizData.questions.length === 0) {
                 errors.push("⚠️ No questions found. Add at least one question.");
@@ -1409,17 +1343,6 @@
                             });
                         });
                     }
-
-                    // 3. Check if correct answer(s) are selected
-                    if (q.type === 'multiple') {
-                        if (!q.correctAnswer || !Array.isArray(q.correctAnswer) || q.correctAnswer.length === 0) {
-                            errors.push(`❌ Question ${qNum}: No correct answers selected (Multiple Choice requires at least one)`);
-                        }
-                    } else if (q.type === 'single' || q.type === 'boolean') {
-                        if (!q.correctAnswer || q.correctAnswer === '') {
-                            errors.push(`❌ Question ${qNum}: No correct answer selected`);
-                        }
-                    }
                 }
             });
 
@@ -1431,28 +1354,12 @@
             const validation = validateQuizData();
 
             if (!validation.valid) {
-                // Show custom modal with errors
-                const errorsList = document.getElementById('validation-errors-list');
-                errorsList.innerHTML = '<ul class="mb-0">' +
-                    validation.errors.map(err => `<li class="mb-2">${err}</li>`).join('') +
-                    '</ul>';
-
-                // Set up the "Proceed Anyway" button
-                document.getElementById('proceed-anyway-btn').onclick = function () {
-                    validationModal.hide();
-                    // Continue with download
-                    proceedWithScormDownload();
-                };
-
-                validationModal.show();
-                return; // Stop here, wait for user decision
+                const errorMessage = "Cannot create SCORM package. Please fix the following issues:\n\n" +
+                    validation.errors.join('\n');
+                alert(errorMessage);
+                return; // Stop execution
             }
 
-            // If validation passed, proceed directly
-            proceedWithScormDownload();
-        }
-
-        function proceedWithScormDownload() {
             //get json data from jsonPreview
             var jsonData = jsonPreview.textContent;
 
@@ -1489,6 +1396,7 @@
                     alert('Error creating SCORM package: ' + xhr.status);
                 }
             };
+
         }
 
         function importJsonFromModal() {

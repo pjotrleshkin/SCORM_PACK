@@ -619,10 +619,6 @@
             // 1. Initialize SCORM
             scorm.init();
 
-            // Initialize Theme
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            applyTheme(savedTheme);
-
             // 2. Fetch Quiz Data
             try {
                 const response = await fetch('quiz_data.json');
@@ -650,6 +646,12 @@
                 } else {
                     currentLanguage = defaultLanguage;
                 }
+
+                // Initialize Theme - prioritize quiz_data.json config, then localStorage, then default to 'light'
+                const configTheme = data.config.THEME || null;
+                const savedTheme = localStorage.getItem('theme');
+                const initialTheme = configTheme || savedTheme || 'light';
+                applyTheme(initialTheme);
 
                 // Setup Language Selector
                 const langSelect = document.getElementById('lang-select');

@@ -15,7 +15,8 @@
         "DISPLAY_ATTEMPTS_COUNTER": true,
         "PASS_PERCENTAGE": 80,
         "DISPLAY_NEEDED_POINTS": true,
-        "COMMIT_ATTEMPT_ON_START": false
+        "COMMIT_ATTEMPT_ON_START": false,
+        "THEME": "dark"
     },
     "questions": [
         {
