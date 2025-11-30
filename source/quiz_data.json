@@ -16,7 +16,15 @@
         "PASS_PERCENTAGE": 80,
         "DISPLAY_NEEDED_POINTS": true,
         "COMMIT_ATTEMPT_ON_START": false,
-        "THEME": "dark"
+        "THEME": "dark",
+        "VALIDATION_MESSAGES": {
+            "confirmRequired": {
+                "en": "You must confirm/agree to proceed.",
+                "de": "Sie müssen bestätigen/zustimmen, um fortzufahren.",
+                "es": "Debe confirmar/aceptar para continuar.",
+                "fr": "Vous devez confirmer/accepter pour continuer."
+            }
+        }
     },
     "questions": [
         {

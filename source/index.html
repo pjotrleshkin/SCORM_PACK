@@ -593,6 +593,7 @@
         let currentLanguage = 'en';
         let defaultLanguage = 'en';
         let TITLE_OBJ = {};
+        let VALIDATION_MESSAGES = {};
 
         // --- STATE ---
         let currentIndex = 0;
@@ -633,7 +634,7 @@
                     COMMIT_ATTEMPT_ON_START = data.config.COMMIT_ATTEMPT_ON_START ?? false;
                     DISPLAY_ATTEMPTS_COUNTER = data.config.DISPLAY_ATTEMPTS_COUNTER ?? true;
                     TITLE_OBJ = data.config.TITLE || { en: "Test Quiz" };
-
+                    VALIDATION_MESSAGES = data.config.VALIDATION_MESSAGES || { confirmRequired: { en: "You must confirm/agree to proceed." } };
                     if (data.config.languages) supportedLanguages = data.config.languages;
                     if (data.config.defaultLanguage) defaultLanguage = data.config.defaultLanguage;
                 }
@@ -1168,7 +1169,8 @@
             const q = questions[currentIndex];
             if (q.type === 'description' && q.blockNext) {
                 if (userAnswers[q.id] !== 'confirmed') {
-                    validationMsg.textContent = "You must confirm/agree to proceed.";
+                    const confirmMsg = VALIDATION_MESSAGES?.confirmRequired || { en: "You must confirm/agree to proceed." };
+                    validationMsg.textContent = getText(confirmMsg);
                     validationMsg.classList.remove('d-none');
                     return;
                 }

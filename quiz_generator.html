@@ -579,7 +579,45 @@
                 "DISPLAY_NEEDED_POINTS": true,
                 "COMMIT_ATTEMPT_ON_START": false,
                 "COMMENTS": "",
-                "THEME": "light"
+                "THEME": "light",
+                "VALIDATION_MESSAGES": {
+                    "confirmRequired": {
+                        "en": "You must confirm/agree to proceed.",
+                        "de": "Sie müssen bestätigen/zustimmen, um fortzufahren.",
+                        "es": "Debe confirmar/aceptar para continuar.",
+                        "fr": "Vous devez confirmer/accepter pour continuer.",
+                        "it": "Devi confermare/accettare per continuare.",
+                        "pt": "Você deve confirmar/aceitar para continuar.",
+                        "ru": "Вы должны подтвердить/согласиться, чтобы продолжить.",
+                        "ua": "Ви повинні підтвердити/згодитися, щоб продовжити.",
+                        "rs": "Мorate потврдићи/прихвратити даље.",
+                        "zh": "您必须确认/同意继续。"
+                    },
+                    "booleanTrue": {
+                        "en": "True",
+                        "de": "Wahr",
+                        "es": "Verdadero",
+                        "fr": "Vrai",
+                        "it": "Vero",
+                        "pt": "Verdadeiro",
+                        "ru": "Правда",
+                        "ua": "Правда",
+                        "rs": "Тачно",
+                        "zh": "真"
+                    },
+                    "booleanFalse": {
+                        "en": "False",
+                        "de": "Falsch",
+                        "es": "Falso",
+                        "fr": "Faux",
+                        "it": "Falso",
+                        "pt": "Falso",
+                        "ru": "Ложь",
+                        "ua": "Неправда",
+                        "rs": "Нетачно",
+                        "zh": "假"
+                    }
+                }
             },
             "questions": [
             ]
@@ -842,7 +880,16 @@
                         if (q.options && Array.isArray(q.options)) {
                             q.options.forEach(opt => {
                                 if (typeof opt === 'object' && opt.text && typeof opt.text === 'object') {
-                                    opt.text[code] = "";
+                                    // For boolean questions, copy from VALIDATION_MESSAGES instead of empty string
+                                    if (q.type === 'boolean') {
+                                        if (opt.id === 'true') {
+                                            opt.text[code] = globalQuizData.config.VALIDATION_MESSAGES?.booleanTrue?.[code] || "";
+                                        } else if (opt.id === 'false') {
+                                            opt.text[code] = globalQuizData.config.VALIDATION_MESSAGES?.booleanFalse?.[code] || "";
+                                        }
+                                    } else {
+                                        opt.text[code] = "";
+                                    }
                                 }
                             });
                         }
@@ -1157,20 +1204,39 @@
         }
 
         function addQuestion() {
+            const newId = Date.now();
             const newQ = {
-                id: globalQuizData.questions.length,
-                type: 'single',
+                id: newId,
+                type: "single",
                 points: 1,
                 question: {},
-                options: [],
-                correctAnswer: ""
+                options: []
             };
-            // Initialize empty strings for all languages for the new question
-            const langs = globalQuizData.config.languages || ['en'];
-            langs.forEach(l => newQ.question[l] = "");
+
+            // Initialize question text for all languages
+            globalQuizData.config.languages.forEach(lang => {
+                newQ.question[lang] = "";
+            });
+
+            // If it's a boolean type, auto-populate with True/False options
+            if (newQ.type === 'boolean') {
+                const trueText = {};
+                const falseText = {};
+
+                // Only copy selected languages
+                globalQuizData.config.languages.forEach(lang => {
+                    trueText[lang] = globalQuizData.config.VALIDATION_MESSAGES?.booleanTrue?.[lang] || "True";
+                    falseText[lang] = globalQuizData.config.VALIDATION_MESSAGES?.booleanFalse?.[lang] || "False";
+                });
+
+                newQ.options = [
+                    { id: "true", text: trueText },
+                    { id: "false", text: falseText }
+                ];
+            }
 
             globalQuizData.questions.push(newQ);
-            renderQuestionCard(newQ, globalQuizData.questions.length - 1);
+            renderUI();
             generateJson();
         }
 
@@ -1334,6 +1400,26 @@
         window.updateTypeUI = function (select) {
             const card = select.closest('.card-body');
             const type = select.value;
+            const index = Array.from(container.children).indexOf(card.closest('.question-card'));
+            const q = globalQuizData.questions[index];
+
+            // Auto-populate boolean options when switching to boolean type
+            if (type === 'boolean' && (!q.options || q.options.length === 0)) {
+                const trueText = {};
+                const falseText = {};
+
+                // Only copy selected languages
+                globalQuizData.config.languages.forEach(lang => {
+                    trueText[lang] = globalQuizData.config.VALIDATION_MESSAGES?.booleanTrue?.[lang] || "True";
+                    falseText[lang] = globalQuizData.config.VALIDATION_MESSAGES?.booleanFalse?.[lang] || "False";
+                });
+
+                q.options = [
+                    { id: "true", text: trueText },
+                    { id: "false", text: falseText }
+                ];
+                q.correctAnswer = ""; // Reset correct answer
+            }
 
             const penaltyGroup = card.querySelector('.q-penalty-group');
             const optionsGroup = card.querySelector('.q-options-group');
