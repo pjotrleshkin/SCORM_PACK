@@ -16,7 +16,7 @@
     <style>
         body {
 
-            background: linear-gradient(90deg, rgba(0, 6, 8, 1) 1%, rgba(5, 53, 66, 1) 48%, rgba(4, 135, 140, 1) 77%, rgba(0, 0, 224, 1) 100%);
+            background: linear-gradient(90deg, rgba(0, 6, 8, 1) 1%, rgba(0, 0, 125, 1) 100%);
             padding: 20px;
             padding-bottom: 80px;
             /* Space for fixed action bar */
@@ -564,14 +564,12 @@
             "config": {
                 "languages": [
                     "en",
-                    "es",
                     "de"
                 ],
                 "defaultLanguage": "en",
                 "TITLE": {
-                    "en": "Gangsta Quiz",
-                    "es": "Cuestionario Gangsta",
-                    "de": "Gangsta-Quiz"
+                    "en": "Knowledge Check Quiz",
+                    "de": ""
                 },
                 "MAX_ATTEMPTS": 999,
                 "DISPLAY_ATTEMPTS_COUNTER": true,
@@ -616,6 +614,42 @@
                         "ua": "Неправда",
                         "rs": "Нетачно",
                         "zh": "假"
+                    },
+                    "buttonNext": {
+                        "en": "Next Question",
+                        "de": "Nächste Frage",
+                        "es": "Siguiente Pregunta",
+                        "fr": "Question suivante",
+                        "it": "Prossima domanda",
+                        "pt": "Próxima Pergunta",
+                        "ru": "Следующий вопрос",
+                        "ua": "Наступний запитання",
+                        "rs": "Напреднија питање",
+                        "zh": "下一個問題"
+                    },
+                    "buttonBack": {
+                        "en": "Previous Question",
+                        "de": "Vorherige Frage",
+                        "es": "Pregunta anterior",
+                        "fr": "Question précédente",
+                        "it": "Domanda precedente",
+                        "pt": "Pergunta anterior",
+                        "ru": "Предыдущий вопрос",
+                        "ua": "Попередній запитання",
+                        "rs": "Назаднија питање",
+                        "zh": "上一個問題"
+                    },
+                    "buttonFinish": {
+                        "en": "Finish",
+                        "de": "Fertig",
+                        "es": "Finalizar",
+                        "fr": "Terminer",
+                        "it": "Terminare",
+                        "pt": "Terminar",
+                        "ru": "Завершить",
+                        "ua": "Завершити",
+                        "rs": "Завршити",
+                        "zh": "完成"
                     }
                 }
             },
@@ -876,6 +910,7 @@
                             q.confirmLabel[code] = "";
                         }
 
+                        // Options
                         // Options
                         if (q.options && Array.isArray(q.options)) {
                             q.options.forEach(opt => {
@@ -1220,18 +1255,15 @@
 
             // If it's a boolean type, auto-populate with True/False options
             if (newQ.type === 'boolean') {
-                const trueText = {};
-                const falseText = {};
-
-                // Only copy selected languages
-                globalQuizData.config.languages.forEach(lang => {
-                    trueText[lang] = globalQuizData.config.VALIDATION_MESSAGES?.booleanTrue?.[lang] || "True";
-                    falseText[lang] = globalQuizData.config.VALIDATION_MESSAGES?.booleanFalse?.[lang] || "False";
-                });
-
                 newQ.options = [
-                    { id: "true", text: trueText },
-                    { id: "false", text: falseText }
+                    {
+                        id: "true",
+                        text: globalQuizData.config.VALIDATION_MESSAGES?.booleanTrue || { en: "True" }
+                    },
+                    {
+                        id: "false",
+                        text: globalQuizData.config.VALIDATION_MESSAGES?.booleanFalse || { en: "False" }
+                    }
                 ];
             }
 
@@ -1286,7 +1318,7 @@
             }
 
             // Options
-            if (['single', 'multiple', 'boolean'].includes(q.type)) {
+            if (['single', 'multiple', 'boolean', 'fill-blank'].includes(q.type)) {
                 // Read from interactive list
                 // IMPORTANT: Save existing options first to preserve all language data
                 const existingOptions = q.options || [];
@@ -1405,18 +1437,15 @@
 
             // Auto-populate boolean options when switching to boolean type
             if (type === 'boolean' && (!q.options || q.options.length === 0)) {
-                const trueText = {};
-                const falseText = {};
-
-                // Only copy selected languages
-                globalQuizData.config.languages.forEach(lang => {
-                    trueText[lang] = globalQuizData.config.VALIDATION_MESSAGES?.booleanTrue?.[lang] || "True";
-                    falseText[lang] = globalQuizData.config.VALIDATION_MESSAGES?.booleanFalse?.[lang] || "False";
-                });
-
                 q.options = [
-                    { id: "true", text: trueText },
-                    { id: "false", text: falseText }
+                    {
+                        id: "true",
+                        text: globalQuizData.config.VALIDATION_MESSAGES?.booleanTrue || { en: "True" }
+                    },
+                    {
+                        id: "false",
+                        text: globalQuizData.config.VALIDATION_MESSAGES?.booleanFalse || { en: "False" }
+                    }
                 ];
                 q.correctAnswer = ""; // Reset correct answer
             }
@@ -1461,6 +1490,15 @@
                 textLabel.textContent = "Content (HTML allowed)";
             } else if (type === 'fill-blank') {
                 textLabel.textContent = "Question Text (use {{BLANK}}... for placeholder)";
+                optionsGroup.classList.add('d-none');  // Hide the old options UI
+                correctGroup.classList.add('d-none');  // Hide the old correct answer UI
+                interactiveGroup.classList.remove('d-none');  // Show the interactive UI (same as single)
+
+                // Re-render interactive options for fill-blank
+                const index = Array.from(container.children).indexOf(card.closest('.question-card'));
+                if (index !== -1 && globalQuizData.questions[index]) {
+                    renderInteractiveOptions(card.closest('.question-card'), globalQuizData.questions[index], index);
+                }
             } else if (type === 'drag-drop-text') {
                 textLabel.textContent = "Question Text (use {{1}}, {{2}}... for placeholders)";
             }

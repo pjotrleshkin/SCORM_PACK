@@ -37,7 +37,7 @@
         }
 
         [data-bs-theme="dark"] {
-            --bg-body: linear-gradient(90deg, rgba(0, 6, 8, 1) 1%, rgba(5, 53, 66, 1) 48%, rgba(4, 135, 140, 1) 77%, rgba(0, 0, 224, 1) 100%);
+            --bg-body: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 115, 1) 100%);
             --bg-card: #343a40;
             --bg-option: #2b3035;
             --bg-option-hover: #343a40;
@@ -793,6 +793,7 @@
         function setLanguage(lang) {
             currentLanguage = lang;
             updateTitle();
+            updateButtonLabels();
             // Re-render current question if visible
             if (!document.getElementById('quiz-interface').classList.contains('d-none')) {
                 loadQuestion(currentIndex);
@@ -804,7 +805,15 @@
             document.title = title;
             document.getElementById('quiz-title').textContent = title;
         }
+        function updateButtonLabels() {
+            const backText = getText(VALIDATION_MESSAGES?.buttonBack || { en: "Back" });
+            const nextText = getText(VALIDATION_MESSAGES?.buttonNext || { en: "Next Question" });
+            const finishText = getText(VALIDATION_MESSAGES?.buttonFinish || { en: "Finish Quiz" });
 
+            prevBtn.textContent = backText;
+            nextBtn.textContent = nextText;
+            submitBtn.textContent = finishText;
+        }
         // Called by the button on Welcome Screen OR automatically if first time
         window.startNewAttempt = function () {
             // Hide welcome screen if visible
@@ -848,6 +857,7 @@
             // 5. Load Data
             // questions is already loaded from JSON
             currentIndex = 0;
+            updateButtonLabels();
             loadQuestion(currentIndex);
         }
 

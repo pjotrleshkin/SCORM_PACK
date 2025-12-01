@@ -2,320 +2,279 @@
     "config": {
         "languages": [
             "en",
-            "es",
             "de"
         ],
         "defaultLanguage": "en",
         "TITLE": {
-            "en": "Gangsta Quiz",
-            "es": "Cuestionario Gangsta",
-            "de": "Gangsta-Quiz"
+            "en": "Knowledge Check Quiz",
+            "de": "Quiz title in DE"
         },
         "MAX_ATTEMPTS": 999,
         "DISPLAY_ATTEMPTS_COUNTER": true,
         "PASS_PERCENTAGE": 80,
         "DISPLAY_NEEDED_POINTS": true,
         "COMMIT_ATTEMPT_ON_START": false,
-        "THEME": "dark",
+        "COMMENTS": "",
+        "THEME": "light",
         "VALIDATION_MESSAGES": {
             "confirmRequired": {
                 "en": "You must confirm/agree to proceed.",
                 "de": "Sie müssen bestätigen/zustimmen, um fortzufahren.",
                 "es": "Debe confirmar/aceptar para continuar.",
-                "fr": "Vous devez confirmer/accepter pour continuer."
+                "fr": "Vous devez confirmer/accepter pour continuer.",
+                "it": "Devi confermare/accettare per continuare.",
+                "pt": "Você deve confirmar/aceitar para continuar.",
+                "ru": "Вы должны подтвердить/согласиться, чтобы продолжить.",
+                "ua": "Ви повинні підтвердити/згодитися, щоб продовжити.",
+                "rs": "Мorate потврдићи/прихвратити даље.",
+                "zh": "您必须确认/同意继续。"
+            },
+            "booleanTrue": {
+                "en": "True",
+                "de": "Wahr",
+                "es": "Verdadero",
+                "fr": "Vrai",
+                "it": "Vero",
+                "pt": "Verdadeiro",
+                "ru": "Правда",
+                "ua": "Правда",
+                "rs": "Тачно",
+                "zh": "真"
+            },
+            "booleanFalse": {
+                "en": "False",
+                "de": "Falsch",
+                "es": "Falso",
+                "fr": "Faux",
+                "it": "Falso",
+                "pt": "Falso",
+                "ru": "Ложь",
+                "ua": "Неправда",
+                "rs": "Нетачно",
+                "zh": "假"
+            },
+            "buttonNext": {
+                "en": "Next Question",
+                "de": "Nächste Frage",
+                "es": "Siguiente Pregunta",
+                "fr": "Question suivante",
+                "it": "Prossima domanda",
+                "pt": "Próxima Pergunta",
+                "ru": "Следующий вопрос",
+                "ua": "Наступний запитання",
+                "rs": "Напреднија питање",
+                "zh": "下一個問題"
+            },
+            "buttonBack": {
+                "en": "Previous Question",
+                "de": "Vorherige Frage",
+                "es": "Pregunta anterior",
+                "fr": "Question précédente",
+                "it": "Domanda precedente",
+                "pt": "Pergunta anterior",
+                "ru": "Предыдущий вопрос",
+                "ua": "Попередній запитання",
+                "rs": "Назаднија питање",
+                "zh": "上一個問題"
+            },
+            "buttonFinish": {
+                "en": "Finish",
+                "de": "Fertig",
+                "es": "Finalizar",
+                "fr": "Terminer",
+                "it": "Terminare",
+                "pt": "Terminar",
+                "ru": "Завершить",
+                "ua": "Завершити",
+                "rs": "Завршити",
+                "zh": "完成"
             }
         }
     },
     "questions": [
         {
-            "id": 0,
+            "id": 1764611589901,
             "type": "description",
-            "points": 0,
-            "question": {
-                "en": "Confidentiality Agreement",
-                "es": "Acuerdo de Confidencialidad",
-                "de": "Vertraulichkeitsvereinbarung"
-            },
-            "content": {
-                "en": "This assessment contains proprietary information. By proceeding, you agree not to share these questions or answers with colleagues. Failure to comply may result in disciplinary action.",
-                "es": "Esta evaluación contiene información propietaria. Al continuar, usted acepta no compartir estas preguntas o respuestas con colegas. El incumplimiento puede resultar en medidas disciplinarias.",
-                "de": "Diese Bewertung enthält geschützte Informationen. Wenn Sie fortfahren, erklären Sie sich damit einverstanden, diese Fragen oder Antworten nicht an Kollegen weiterzugeben. Bei Nichteinhaltung können Disziplinarmaßnahmen ergriffen werden."
-            },
-            "blockNext": true,
-            "confirmLabel": {
-                "en": "I have read and agree to the terms.",
-                "es": "He leído y acepto los términos.",
-                "de": "Ich habe die Bedingungen gelesen und stimme ihnen zu."
-            }
-        },
-        {
-            "id": 1,
-            "type": "boolean",
             "points": 1,
             "question": {
-                "en": "is inline css good practice?",
-                "es": "¿es buena práctica el css en línea?",
-                "de": "Ist Inline-CSS eine gute Praxis?"
+                "en": "Info",
+                "de": "Info"
             },
-            "options": [
-                {
-                    "id": "true",
-                    "text": {
-                        "en": "True",
-                        "es": "Verdadero",
-                        "de": "Wahr"
-                    }
-                },
-                {
-                    "id": "false",
-                    "text": {
-                        "en": "False",
-                        "es": "Falso",
-                        "de": "Falsch"
-                    }
-                }
-            ],
-            "correctAnswer": "false"
+            "options": [],
+            "penalty": 0,
+            "correctAnswer": "",
+            "content": {
+                "en": "<h1> plz confirm </h1>",
+                "de": "<h1> plz confirm in german</h1>"
+            },
+            "confirmLabel": {
+                "en": "I confirm",
+                "de": "i confirm in german"
+            },
+            "blockNext": true
         },
         {
-            "id": 2,
+            "id": 1764611590213,
             "type": "single",
             "points": 1,
             "question": {
-                "en": "What implies that a variable cannot be reassigned in JavaScript?",
-                "es": "¿Qué implica que una variable no puede ser reasignada en JavaScript?",
-                "de": "Was bedeutet, dass eine Variable in JavaScript nicht neu zugewiesen werden kann?"
+                "en": "who is us president (EN)",
+                "de": "who is us president (DE)"
             },
             "options": [
                 {
-                    "id": "var",
+                    "id": "opt_1764611670987_n887a",
                     "text": {
-                        "en": "var",
-                        "es": "var",
-                        "de": "var"
+                        "en": "1",
+                        "de": "1"
                     }
                 },
                 {
-                    "id": "let",
+                    "id": "opt_1764611672081_e7nho",
                     "text": {
-                        "en": "let",
-                        "es": "let",
-                        "de": "let"
+                        "en": "2",
+                        "de": "2"
                     }
                 },
                 {
-                    "id": "const",
+                    "id": "opt_1764611676124_gdj2h",
                     "text": {
-                        "en": "const",
-                        "es": "const",
-                        "de": "const"
-                    }
-                },
-                {
-                    "id": "function",
-                    "text": {
-                        "en": "function",
-                        "es": "function",
-                        "de": "function"
+                        "en": "3",
+                        "de": "3"
                     }
                 }
             ],
-            "correctAnswer": "const"
+            "penalty": 0,
+            "correctAnswer": "opt_1764611670987_n887a"
         },
         {
-            "id": 3,
+            "id": 1764611590519,
             "type": "multiple",
             "points": 1,
-            "penalty": 0.33,
             "question": {
-                "en": "Which of the following are valid HTTP methods?",
-                "es": "¿Cuáles de los siguientes son métodos HTTP válidos?",
-                "de": "Welche der folgenden sind gültige HTTP-Methoden?"
+                "en": "who are not enemies of state",
+                "de": "who are not enemies of state (DE)"
             },
             "options": [
                 {
-                    "id": "get",
+                    "id": "opt_1764611696985_kfp9d",
                     "text": {
-                        "en": "GET",
-                        "es": "GET",
-                        "de": "GET"
+                        "en": "laura",
+                        "de": ""
                     }
                 },
                 {
-                    "id": "post",
+                    "id": "opt_1764611697632_20dxr",
                     "text": {
-                        "en": "POST",
-                        "es": "POST",
-                        "de": "POST"
+                        "en": "srdjan",
+                        "de": ""
                     }
                 },
                 {
-                    "id": "jump",
+                    "id": "opt_1764611698194_sn75s",
                     "text": {
-                        "en": "JUMP",
-                        "es": "JUMP",
-                        "de": "JUMP"
-                    }
-                },
-                {
-                    "id": "delete",
-                    "text": {
-                        "en": "DELETE",
-                        "es": "DELETE",
-                        "de": "DELETE"
-                    }
-                },
-                {
-                    "id": "stop",
-                    "text": {
-                        "en": "STOP",
-                        "es": "STOP",
-                        "de": "STOP"
+                        "en": "pjotr",
+                        "de": ""
                     }
                 }
             ],
+            "penalty": 0.75,
             "correctAnswer": [
-                "get",
-                "post",
-                "delete"
+                "opt_1764611696985_kfp9d",
+                "opt_1764611697632_20dxr"
             ]
         },
         {
-            "id": 4,
+            "id": 1764611590839,
             "type": "boolean",
             "points": 1,
             "question": {
-                "en": "HTML is a programming language.",
-                "es": "HTML es un lenguaje de programación.",
-                "de": "HTML ist eine Programmiersprache."
+                "en": "is earth flat",
+                "de": "is earth Flat (de)"
             },
             "options": [
                 {
                     "id": "true",
                     "text": {
                         "en": "True",
+                        "de": "Wahr",
                         "es": "Verdadero",
-                        "de": "Wahr"
+                        "fr": "Vrai",
+                        "it": "Vero",
+                        "pt": "Verdadeiro",
+                        "ru": "Правда",
+                        "ua": "Правда",
+                        "rs": "Тачно",
+                        "zh": "真"
                     }
                 },
                 {
                     "id": "false",
                     "text": {
                         "en": "False",
+                        "de": "Falsch",
                         "es": "Falso",
-                        "de": "Falsch"
+                        "fr": "Faux",
+                        "it": "Falso",
+                        "pt": "Falso",
+                        "ru": "Ложь",
+                        "ua": "Неправда",
+                        "rs": "Нетачно",
+                        "zh": "假"
                     }
                 }
             ],
+            "penalty": 0,
             "correctAnswer": "false"
         },
         {
-            "id": 5,
+            "id": 1764611727970,
             "type": "text",
-            "points": 5,
+            "points": 1,
             "question": {
-                "en": "Type a keyword used to return a value from a function.",
-                "es": "Escribe una palabra clave usada para devolver un valor de una función.",
-                "de": "Geben Sie ein Schlüsselwort ein, das verwendet wird, um einen Wert aus einer Funktion zurückzugeben."
+                "en": "type pjotr (or mama)",
+                "de": "type pjotr or mama (DE)"
             },
             "options": [],
+            "penalty": 0,
             "correctAnswer": [
-                "return",
-                "yield"
+                "pjotr",
+                "mama"
             ]
         },
         {
-            "id": 6,
+            "id": 1764611764655,
             "type": "fill-blank",
-            "points": 3,
+            "points": 1,
             "question": {
-                "en": "The {{BLANK}} tag is used to define a hyperlink.",
-                "es": "La etiqueta {{BLANK}} se usa para definir un hipervínculo.",
-                "de": "Das {{BLANK}}-Tag wird verwendet, um einen Hyperlink zu definieren."
+                "en": "{{BLANK}} is chunky cat",
+                "de": "{{BLANK}} is a chunky cat (DE)"
             },
             "options": [
                 {
-                    "id": "link",
+                    "id": "opt_1764611781631_s1949",
                     "text": {
-                        "en": "&lt;link&gt;",
-                        "es": "&lt;link&gt;",
-                        "de": "&lt;link&gt;"
+                        "en": "Alpha",
+                        "de": "Alpha (DE)"
                     }
                 },
                 {
-                    "id": "a",
+                    "id": "opt_1764611782717_6v5qx",
                     "text": {
-                        "en": "&lt;a&gt;",
-                        "es": "&lt;a&gt;",
-                        "de": "&lt;a&gt;"
+                        "en": "Beta",
+                        "de": "Beta (DE)"
                     }
                 },
                 {
-                    "id": "href",
+                    "id": "opt_1764611783679_uii6y",
                     "text": {
-                        "en": "&lt;href&gt;",
-                        "es": "&lt;href&gt;",
-                        "de": "&lt;href&gt;"
+                        "en": "Omega",
+                        "de": "Omega (DE)"
                     }
                 }
             ],
-            "correctAnswer": "a"
-        },
-        {
-            "id": 7,
-            "type": "drag-drop-text",
-            "points": 5,
-            "question": {
-                "en": "The {{1}} is the largest planet in our solar system, while {{2}} is known as the Red Planet.",
-                "es": "El {{1}} es el planeta más grande de nuestro sistema solar, mientras que {{2}} es conocido como el Planeta Rojo.",
-                "de": "Der {{1}} ist der größte Planet in unserem Sonnensystem, während {{2}} als der Rote Planet bekannt ist."
-            },
-            "options": [
-                {
-                    "id": "jupiter",
-                    "text": {
-                        "en": "Jupiter",
-                        "es": "Júpiter",
-                        "de": "Jupiter"
-                    }
-                },
-                {
-                    "id": "mars",
-                    "text": {
-                        "en": "Mars",
-                        "es": "Marte",
-                        "de": "Mars"
-                    }
-                },
-                {
-                    "id": "earth",
-                    "text": {
-                        "en": "Earth",
-                        "es": "Tierra",
-                        "de": "Erde"
-                    }
-                },
-                {
-                    "id": "venus",
-                    "text": {
-                        "en": "Venus",
-                        "es": "Venus",
-                        "de": "Venus"
-                    }
-                },
-                {
-                    "id": "saturn",
-                    "text": {
-                        "en": "Saturn",
-                        "es": "Saturno",
-                        "de": "Saturn"
-                    }
-                }
-            ],
-            "correctAnswer": {
-                "1": "jupiter",
-                "2": "mars"
-            }
+            "penalty": 0,
+            "correctAnswer": "opt_1764611781631_s1949"
         }
     ]
 }
