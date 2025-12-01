@@ -2,19 +2,21 @@
     "config": {
         "languages": [
             "en",
-            "de"
+            "de",
+            "ru"
         ],
         "defaultLanguage": "en",
         "TITLE": {
-            "en": "Knowledge Check Quiz",
-            "de": "Quiz title in DE"
+            "en": "Knowledge Check Quiz (5 questions 3 languages)",
+            "de": "Wissenstest",
+            "ru": "Опросник"
         },
         "MAX_ATTEMPTS": 999,
         "DISPLAY_ATTEMPTS_COUNTER": true,
         "PASS_PERCENTAGE": 80,
         "DISPLAY_NEEDED_POINTS": true,
         "COMMIT_ATTEMPT_ON_START": false,
-        "COMMENTS": "",
+        "COMMENTS": "5 questions 3 languages",
         "THEME": "light",
         "VALIDATION_MESSAGES": {
             "confirmRequired": {
@@ -88,109 +90,152 @@
                 "ua": "Завершити",
                 "rs": "Завршити",
                 "zh": "完成"
+            },
+            "resultPassed": {
+                "en": "Congratulations! You passed.",
+                "de": "Glückwunsch! Sie haben bestanden.",
+                "es": "¡Felicidades! Has aprobado.",
+                "fr": "Félicitations ! Vous avez réussi.",
+                "it": "Congratulazioni! Hai superato.",
+                "pt": "Parabéns! Você passou.",
+                "ru": "Поздравляем! Вы прошли.",
+                "ua": "Ви вдалося! Ви пройшли.",
+                "rs": "Поздрављање! Пасијећи.",
+                "zh": "恭喜你通过了！"
+            },
+            "resultFailed": {
+                "en": "Attempt Recorded. You did not meet the passing score.",
+                "de": "Versuch aufgezeichnet. Sie haben das Mindestpunktestand nicht erreicht.",
+                "es": "Intento grabado. No alcanzó el puntaje mínimo.",
+                "fr": "Essai enregistré. Vous n'avez pas atteint le score minimum.",
+                "it": "Tentativo registrato. Non hai raggiunto lo score minimo.",
+                "pt": "Tentativa registrada. Você não alcançou a pontuação mínima.",
+                "ru": "Попытка записана. Вы не достигли минимального балла.",
+                "ua": "Спроба записана. Ви не досягли мінімального балу.",
+                "rs": "Попаћа записана. Пасијећи.",
+                "zh": "尝试记录。您没有达到及格分数。"
+            },
+            "pointsNeeded": {
+                "en": "Points needed to pass",
+                "de": "Zum Bestehen benötigte Punkte",
+                "es": "Puntos necesarios para aprobar",
+                "fr": "Points nécessaires pour passer",
+                "it": "Punti necessari per passare",
+                "pt": "Pontos necessários para passar",
+                "ru": "Необходимо баллов для прохождения",
+                "ua": "Необхідно балів для проходження",
+                "rs": "Необхидно балова за прохождение",
+                "zh": "需要的分数通过"
+            },
+            "buttonPassedClose": {
+                "en": "Assessment Passed - Click to Close",
+                "de": "Bewertung bestanden - Klicken zum Schließen",
+                "es": "Aprobado - Haga clic para cerrar",
+                "fr": "Évaluation passée - Cliquez pour fermer",
+                "it": "Valutazione superata - Clicca per chiudere",
+                "pt": "Avaliação aprovada - Clique para fechar",
+                "ru": "Тест пройден - Нажмите, чтобы закрыть",
+                "ua": "Тест пройден - Натисніть, щоб закрити",
+                "rs": "Тест пройден - Натисните за затварање",
+                "zh": "评估通过 - 点击关闭"
+            },
+            "buttonMaxAttempts": {
+                "en": "Maximum Attempts Used - Close Window to Exit",
+                "de": "Maximale Versuche verwendet - Fenster schließen zum Beenden",
+                "es": "Intentos máximos utilizados - Cerrar ventana para salir",
+                "fr": "Tentatives maximum utilisés - Fermer la fenêtre pour quitter",
+                "it": "Tentativi massimi utilizzati - Chiudi finestra per uscire",
+                "pt": "Tentativas máximas utilizadas - Feche a janela para sair",
+                "ru": "Использованы все попытки - Закройте окно для выхода",
+                "ua": "Використано всі спроби - Закрийте вікно для виходу",
+                "rs": "Использованы все попытки - Закройте окно для выхода",
+                "zh": "评估通过 - 点击关闭"
+            },
+            "buttonRetry": {
+                "en": "Retry / Reattempt",
+                "de": "Wiederholen / Erneut versuchen",
+                "es": "Reintentar",
+                "fr": "Reessayer",
+                "it": "Riprova",
+                "pt": "Reintentar",
+                "ru": "Повторить попытку",
+                "ua": "Повторити спробу",
+                "rs": "Повторити спробу",
+                "zh": "评估通过 - 点击关闭"
             }
         }
     },
     "questions": [
         {
-            "id": 1764611589901,
+            "id": 1764625770653,
             "type": "description",
-            "points": 1,
+            "points": 0,
             "question": {
                 "en": "Info",
-                "de": "Info"
+                "de": "Info",
+                "ru": "Info"
             },
             "options": [],
             "penalty": 0,
-            "correctAnswer": "",
             "content": {
-                "en": "<h1> plz confirm </h1>",
-                "de": "<h1> plz confirm in german</h1>"
+                "en": "<h1 style = \"color:yellow\"> Warining! </h1>\nYou must accept that you are miserable peasant, and, during performance reviews you will be happy for not being fired.",
+                "de": "<h1 style = \"color:yellow\"> Achtung! </h1>\nSie müssen akzeptieren, dass Sie ein armseliger Bauer sind, und bei Leistungsbeurteilungen werden Sie froh sein, nicht gefeuert worden zu sein.",
+                "ru": "<h1 style = \"color:yellow\"> Внимание! </h1>\nВы должны признать, что вы жалкий крестьянин, и во время аттестации будете рады, что вас не уволили."
             },
+            "correctAnswer": "",
             "confirmLabel": {
                 "en": "I confirm",
-                "de": "i confirm in german"
+                "de": "ich bestätige",
+                "ru": "Челом бью"
             },
             "blockNext": true
         },
         {
-            "id": 1764611590213,
+            "id": 1764625853908,
             "type": "single",
-            "points": 1,
+            "points": 2,
             "question": {
-                "en": "who is us president (EN)",
-                "de": "who is us president (DE)"
+                "en": "What is our moto?",
+                "de": "Was ist unser Motto?",
+                "ru": "Какой наш девиз?"
             },
             "options": [
                 {
-                    "id": "opt_1764611670987_n887a",
+                    "id": "opt_1764625904157_q91z7",
                     "text": {
-                        "en": "1",
-                        "de": "1"
+                        "en": "Labour frees you",
+                        "de": "arbaiten maht frei",
+                        "ru": "Труд освобождает"
                     }
                 },
                 {
-                    "id": "opt_1764611672081_e7nho",
+                    "id": "opt_1764625905508_f3dfg",
                     "text": {
-                        "en": "2",
-                        "de": "2"
+                        "en": "Inspire empower deliver",
+                        "de": "inspirieren, befähigen, liefern",
+                        "ru": "inspire empower deliver"
                     }
                 },
                 {
-                    "id": "opt_1764611676124_gdj2h",
+                    "id": "opt_1764625906070_8f0mi",
                     "text": {
-                        "en": "3",
-                        "de": "3"
+                        "en": "invisible hand of market wil invisibly rape you",
+                        "de": "Die unsichtbare Hand des Marktes wird dich unsichtbar vergewaltigen",
+                        "ru": "Невидимая рука рынка невидимо насилует вас"
                     }
                 }
             ],
             "penalty": 0,
-            "correctAnswer": "opt_1764611670987_n887a"
+            "correctAnswer": "opt_1764625905508_f3dfg"
         },
         {
-            "id": 1764611590519,
-            "type": "multiple",
-            "points": 1,
-            "question": {
-                "en": "who are not enemies of state",
-                "de": "who are not enemies of state (DE)"
-            },
-            "options": [
-                {
-                    "id": "opt_1764611696985_kfp9d",
-                    "text": {
-                        "en": "laura",
-                        "de": ""
-                    }
-                },
-                {
-                    "id": "opt_1764611697632_20dxr",
-                    "text": {
-                        "en": "srdjan",
-                        "de": ""
-                    }
-                },
-                {
-                    "id": "opt_1764611698194_sn75s",
-                    "text": {
-                        "en": "pjotr",
-                        "de": ""
-                    }
-                }
-            ],
-            "penalty": 0.75,
-            "correctAnswer": [
-                "opt_1764611696985_kfp9d",
-                "opt_1764611697632_20dxr"
-            ]
-        },
-        {
-            "id": 1764611590839,
+            "id": 1764626171526,
             "type": "boolean",
             "points": 1,
             "question": {
-                "en": "is earth flat",
-                "de": "is earth Flat (de)"
+                "en": "is existance of Billionaires, born into such position, fair?",
+                "de": "Ist die Existenz von Milliardären, die in eine solche Position hineingeboren werden, gerecht?",
+                "ru": "Честно ли существование миллиардеров, которые родились в этом статусе?"
             },
             "options": [
                 {
@@ -225,56 +270,106 @@
                 }
             ],
             "penalty": 0,
-            "correctAnswer": "false"
+            "correctAnswer": "true"
         },
         {
-            "id": 1764611727970,
+            "id": 1764626308731,
             "type": "text",
             "points": 1,
             "question": {
-                "en": "type pjotr (or mama)",
-                "de": "type pjotr or mama (DE)"
+                "en": "Capitalism knows only one color: that color is {{BLANK}}; all else is necessarily subservient to it, hence, race, gender and ethnicity cannot be considered within it. – Thomas Sowell\n",
+                "de": "Der Kapitalismus kennt nur eine Farbe: {{BLANK}}; alles andere ist ihm notwendigerweise untergeordnet, daher können Rasse, Geschlecht und ethnische Zugehörigkeit in diesem Kontext keine Rolle spielen. – Thomas Sowell",
+                "ru": "Капитализм знает только один цвет: этот цвет — {{BLANK}}; всё остальное ему неизбежно подчиняется, поэтому раса, пол и этническая принадлежность не могут быть в нём учтены. — Томас Соуэлл"
             },
             "options": [],
             "penalty": 0,
             "correctAnswer": [
-                "pjotr",
-                "mama"
+                "green",
+                "grün",
+                "зеленый"
             ]
         },
         {
-            "id": 1764611764655,
+            "id": 1764626925520,
             "type": "fill-blank",
             "points": 1,
             "question": {
-                "en": "{{BLANK}} is chunky cat",
-                "de": "{{BLANK}} is a chunky cat (DE)"
+                "en": "On the night of December 2-3, 1984, a pesticide plant owned by Union Carbide India Limited (UCIL), a subsidiary of the U.S. based Union Carbide Corporation (UCC), leaked approximately 42 tons of highly toxic methyl isocyanate (MIC) gas into the atmosphere.The gas cloud spread over densely populated neighborhoods, killing thousands within hours. The official immediate death toll was around 3,787, but estimates of total deaths range from 15,000 to 20,000 over the years. Over half a million people suffered severe injuries and long-term health problems, including respiratory issues, blindness, birth defects, and cancer. The U.S. CEO, Warren Anderson, was arrested {{BLANK}} in India. ",
+                "de": "In der Nacht vom 2. auf den 3. Dezember 1984 traten in einer Pestizidfabrik der Union Carbide India Limited (UCIL), einer Tochtergesellschaft des US-amerikanischen Konzerns Union Carbide Corporation (UCC), etwa 42 Tonnen des hochgiftigen Gases Methylisocyanat (MIC) aus. Die Gaswolke breitete sich über dicht besiedelte Gebiete aus und tötete innerhalb weniger Stunden Tausende von Menschen. Die offizielle Zahl der unmittelbaren Todesopfer lag bei etwa 3.787, Schätzungen gehen jedoch von 15.000 bis 20.000 Toten im Laufe der Jahre aus. Über eine halbe Million Menschen erlitten schwere Verletzungen und langfristige Gesundheitsprobleme, darunter Atemwegserkrankungen, Erblindung, Geburtsfehler und Krebs. Der US-amerikanische CEO, Warren Anderson, wurde in Indien verhaftet und {{BLANK}}.",
+                "ru": "В ночь со 2 на 3 декабря 1984 года на заводе по производству пестицидов, принадлежащем компании Union Carbide India Limited (UCIL), дочерней компании американской Union Carbide Corporation (UCC), произошел выброс в атмосферу около 42 тонн высокотоксичного газа метилизоцианата (МИЗ). Облако газа распространилось над густонаселенными районами, убив тысячи людей в течение нескольких часов. Официальное число погибших составило около 3787 человек, но оценки общего числа погибших за годы варьируются от 15 000 до 20 000 человек. Более полумиллиона человек получили серьезные травмы и хронические заболевания, включая респираторные заболевания, слепоту, врожденные дефекты и рак. Генеральный директор США Уоррен Андерсон был арестован {{BLANK}} в Индии."
             },
             "options": [
                 {
-                    "id": "opt_1764611781631_s1949",
+                    "id": "opt_1764626937944_idrwg",
                     "text": {
-                        "en": "Alpha",
-                        "de": "Alpha (DE)"
+                        "en": "died 3 years later",
+                        "de": "starb 3 Jahre später",
+                        "ru": "и погиб спустя 3 года"
                     }
                 },
                 {
-                    "id": "opt_1764611782717_6v5qx",
+                    "id": "opt_1764626939298_xdv0n",
                     "text": {
-                        "en": "Beta",
-                        "de": "Beta (DE)"
+                        "en": "and never faced trial",
+                        "de": "nie vor Gericht gestellt",
+                        "ru": "но никогда не предстал перед судом"
                     }
                 },
                 {
-                    "id": "opt_1764611783679_uii6y",
+                    "id": "opt_1764626940490_evzgv",
                     "text": {
-                        "en": "Omega",
-                        "de": "Omega (DE)"
+                        "en": "and sentenced to life",
+                        "de": "und wurde zu lebenslanger Haft verurteilt",
+                        "ru": "и приговорен к пожизненному"
                     }
                 }
             ],
             "penalty": 0,
-            "correctAnswer": "opt_1764611781631_s1949"
+            "correctAnswer": "opt_1764626939298_xdv0n"
+        },
+        {
+            "id": 1764627497545,
+            "type": "boolean",
+            "points": 1,
+            "question": {
+                "en": "Fewer than a dozen Estonian Jews are known to have survived the war in Estonia.",
+                "de": "Es ist bekannt, dass weniger als ein Dutzend estnische Juden den Krieg in Estland überlebt haben.",
+                "ru": "Меньше 12ти евреев пережили холокост в Эстонии"
+            },
+            "options": [
+                {
+                    "id": "true",
+                    "text": {
+                        "en": "True",
+                        "de": "Wahr",
+                        "es": "Verdadero",
+                        "fr": "Vrai",
+                        "it": "Vero",
+                        "pt": "Verdadeiro",
+                        "ru": "Правда",
+                        "ua": "Правда",
+                        "rs": "Тачно",
+                        "zh": "真"
+                    }
+                },
+                {
+                    "id": "false",
+                    "text": {
+                        "en": "False",
+                        "de": "Falsch",
+                        "es": "Falso",
+                        "fr": "Faux",
+                        "it": "Falso",
+                        "pt": "Falso",
+                        "ru": "Ложь",
+                        "ua": "Неправда",
+                        "rs": "Нетачно",
+                        "zh": "假"
+                    }
+                }
+            ],
+            "penalty": 0,
+            "correctAnswer": "true"
         }
     ]
 }

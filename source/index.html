@@ -794,9 +794,15 @@
             currentLanguage = lang;
             updateTitle();
             updateButtonLabels();
+
             // Re-render current question if visible
             if (!document.getElementById('quiz-interface').classList.contains('d-none')) {
                 loadQuestion(currentIndex);
+            }
+
+            // Update result screen if visible
+            if (!resultArea.classList.contains('d-none')) {
+                updateResultScreen();
             }
         }
 
@@ -813,6 +819,40 @@
             prevBtn.textContent = backText;
             nextBtn.textContent = nextText;
             submitBtn.textContent = finishText;
+        }
+
+        function updateResultScreen() {
+            // Get the stored result data (you'll need to save this when quiz is submitted)
+            if (!window.lastResult) return;
+
+            const result = window.lastResult;
+            const percentage = (result.score / result.max) * 100;
+            const status = percentage >= PASS_PERCENTAGE ? "passed" : "failed";
+
+            // Update the message
+            const passedMsg = getText(VALIDATION_MESSAGES?.resultPassed || { en: "Congratulations! You Passed." });
+            const failedMsg = getText(VALIDATION_MESSAGES?.resultFailed || { en: "Attempt Recorded. You did not meet the passing score." });
+            let message = status === 'passed' ? passedMsg : failedMsg;
+
+            if (DISPLAY_NEEDED_POINTS) {
+                const pointsNeeded = (result.max * PASS_PERCENTAGE) / 100;
+                const pointsLabel = getText(VALIDATION_MESSAGES?.pointsNeeded || { en: "Points needed to pass" });
+                message += ` (${pointsLabel}: ${pointsNeeded})`;
+            }
+
+            document.getElementById('score-message').textContent = message;
+
+            // Update button labels
+            const rBtn = document.getElementById('restart-btn');
+            if (status === 'passed') {
+                rBtn.textContent = getText(VALIDATION_MESSAGES?.buttonPassedClose || { en: "Assessment Passed - Click to Close" });
+            } else {
+                if (storedData.attempts >= MAX_ATTEMPTS) {
+                    rBtn.textContent = getText(VALIDATION_MESSAGES?.buttonMaxAttempts || { en: "Maximum Attempts Used - Close Window to Exit" });
+                } else {
+                    rBtn.textContent = getText(VALIDATION_MESSAGES?.buttonRetry || { en: "Retry / Reattempt" });
+                }
+            }
         }
         // Called by the button on Welcome Screen OR automatically if first time
         window.startNewAttempt = function () {
@@ -1282,6 +1322,7 @@
             if (currentIndex !== indexBefore) return;
 
             const result = calculateTotalScore();
+            window.lastResult = result; // Save for language switching
 
             // 1. Handle Late Attempt Counting
             if (!COMMIT_ATTEMPT_ON_START) {
@@ -1320,11 +1361,14 @@
                 resultGif.src = "on_failure.gif";
             }
 
-            let message = status === 'passed' ? "Congratulations! You Passed." : "Attempt Recorded. You did not meet the passing score.";
+            const passedMsg = getText(VALIDATION_MESSAGES?.resultPassed || { en: "Congratulations! You Passed." });
+            const failedMsg = getText(VALIDATION_MESSAGES?.resultFailed || { en: "Attempt Recorded. You did not meet the passing score." });
+            let message = status === 'passed' ? passedMsg : failedMsg;
 
             if (DISPLAY_NEEDED_POINTS) {
                 const pointsNeeded = (result.max * PASS_PERCENTAGE) / 100;
-                message += ` (Points needed to pass: ${pointsNeeded})`;
+                const pointsLabel = getText(VALIDATION_MESSAGES?.pointsNeeded || { en: "Points needed to pass" });
+                message += ` (${pointsLabel}: ${pointsNeeded})`;
             }
 
             document.getElementById('score-message').textContent = message;
@@ -1334,19 +1378,19 @@
             if (status === 'passed') {
                 // PASSED: Show Close Window
                 rBtn.classList.remove('disabled');
-                rBtn.textContent = "Assessment Passed - Click to Close";
+                rBtn.textContent = getText(VALIDATION_MESSAGES?.buttonPassedClose || { en: "Assessment Passed - Click to Close" });
                 rBtn.setAttribute('onclick', 'window.close()');
             } else {
                 // FAILED
                 if (storedData.attempts >= MAX_ATTEMPTS) {
                     // Max Attempts Reached
                     rBtn.classList.add('disabled');
-                    rBtn.textContent = "Maximum Attempts Used - Close Window to Exit";
+                    rBtn.textContent = getText(VALIDATION_MESSAGES?.buttonMaxAttempts || { en: "Maximum Attempts Used - Close Window to Exit" });
                     rBtn.removeAttribute('onclick');
                 } else {
                     // Retry Available
                     rBtn.classList.remove('disabled');
-                    rBtn.textContent = "Retry / Reattempt";
+                    rBtn.textContent = getText(VALIDATION_MESSAGES?.buttonRetry || { en: "Retry / Reattempt" });
                     rBtn.setAttribute('onclick', 'startNewAttempt()');
                 }
             }
