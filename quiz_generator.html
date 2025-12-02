@@ -1106,6 +1106,21 @@
             renderUI();
         }
 
+        /**
+ * Extracts placeholder names from drag-drop question text
+ * Example: "{{Mars}} is red, {{Jupiter}} is big" -> ["Mars", "Jupiter"]
+ */
+        function extractDragDropPlaceholders(questionText) {
+            if (!questionText) return [];
+            const regex = /\{\{([^}]+)\}\}/g;
+            const matches = [];
+            let match;
+            while ((match = regex.exec(questionText)) !== null) {
+                matches.push(match[1].trim());
+            }
+            return matches;
+        }
+
         function renderUI() {
             // Config
             const titleElement = document.getElementById('conf-title');
@@ -1215,6 +1230,7 @@
 
             const isMultiple = data.type === 'multiple';
             const inputType = isMultiple ? 'checkbox' : 'radio';
+            const isDragDrop = data.type === 'drag-drop-text';
             const name = `q_${index}_correct`; // Unique name for radios per question
 
             // Ensure options exist
@@ -1241,11 +1257,12 @@
                 const optText = typeof opt === 'object' ? getLangText(opt.text, false) : opt;
                 const optPlaceholder = (typeof opt === 'object' && !optText) ? getPlaceholderText(opt.text) : "Response";
 
+                console.log('isDragDrop:', isDragDrop, 'data.type:', data.type);
                 row.innerHTML = `
-    <div class="form-check mb-0">
+    ${!isDragDrop ? `<div class="form-check mb-0">
         <input class="form-check-input opt-correct" type="${inputType}" name="${name}" 
             value="${optId}" ${isChecked ? 'checked' : ''} onchange="updateQuestionDataFromUI(null, ${index})">
-    </div>
+    </div>` : ''}
     <input type="text" class="form-control opt-text" value="${optText}" 
         placeholder="${optPlaceholder}" oninput="updateQuestionDataFromUI(null, ${index})">
     <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOptionRow(this, ${index})">
@@ -1288,19 +1305,20 @@
 
             const type = card.querySelector('.q-type').value;
             const isMultiple = type === 'multiple';
+            const isDragDrop = type === 'drag-drop-text';  // ADD THIS
             const inputType = isMultiple ? 'checkbox' : 'radio';
             const name = `q_${index}_correct`;
 
             row.innerHTML = `
-        <div class="form-check mb-0">
-            <input class="form-check-input opt-correct" type="${inputType}" name="${name}" 
-                value="${newId}" onchange="updateQuestionDataFromUI(null, ${index})">
-        </div>
-        <input type="text" class="form-control opt-text" value="" 
-            placeholder="Response Option Text" oninput="updateQuestionDataFromUI(null, ${index})">
-        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOptionRow(this, ${index})">
-            <i class="bi bi-trash"></i>
-        </button>
+${!isDragDrop ? `<div class="form-check mb-0">
+    <input class="form-check-input opt-correct" type="${inputType}" name="${name}" 
+        value="${newId}" onchange="updateQuestionDataFromUI(null, ${index})">
+</div>` : ''}
+<input type="text" class="form-control opt-text" value="" 
+    placeholder="Response Option Text" oninput="updateQuestionDataFromUI(null, ${index})">
+<button type="button" class="btn btn-outline-danger btn-sm" onclick="removeOptionRow(this, ${index})">
+    <i class="bi bi-trash"></i>
+</button>
     `;
             list.appendChild(row);
 
@@ -1389,6 +1407,41 @@
             } else {
                 if (!q.question || typeof q.question === 'string') q.question = {};
                 q.question[currentEditorLanguage] = textVal;
+            }
+
+            // Auto-update drag-drop options from question text placeholders
+            if (q.type === 'drag-drop-text') {
+                const placeholders = extractDragDropPlaceholders(textVal);
+
+                // Get existing options (preserve manually added distractors)
+                const existingOptions = q.options || [];
+                const existingIds = existingOptions.map(opt => opt.id);
+
+                // Add new placeholder options if they don't exist
+                placeholders.forEach(placeholder => {
+                    if (!existingIds.includes(placeholder)) {
+                        const newOpt = {
+                            id: placeholder,
+                            text: {}
+                        };
+                        // Initialize text for all languages with the placeholder name
+                        globalQuizData.config.languages.forEach(lang => {
+                            newOpt.text[lang] = placeholder;
+                        });
+                        existingOptions.push(newOpt);
+                    }
+                });
+
+                q.options = existingOptions;
+
+                // Auto-set correct answer (each placeholder maps to itself)
+                q.correctAnswer = {};
+                placeholders.forEach(placeholder => {
+                    q.correctAnswer[placeholder] = placeholder;
+                });
+
+                // Re-render options to show the new ones
+                renderInteractiveOptions(card, q, index);
             }
 
             // Options
@@ -1539,7 +1592,7 @@
             descGroup.classList.add('d-none');
             textLabel.textContent = "Question Text";
 
-            if (['single', 'multiple', 'boolean'].includes(type)) {
+            if (['single', 'multiple', 'boolean', 'drag-drop-text'].includes(type)) {
                 optionsGroup.classList.add('d-none');
                 correctGroup.classList.add('d-none');
                 interactiveGroup.classList.remove('d-none');
@@ -1574,7 +1627,17 @@
                     renderInteractiveOptions(card.closest('.question-card'), globalQuizData.questions[index], index);
                 }
             } else if (type === 'drag-drop-text') {
-                textLabel.textContent = "Question Text (use {{1}}, {{2}}... for placeholders)";
+                textLabel.textContent = "Question Text (use {{AnswerText}} for placeholders - auto-detected as correct answers)";
+
+                // Clear options for drag-drop (they'll be auto-generated from placeholders)
+                const index = Array.from(container.children).indexOf(card.closest('.question-card'));
+                if (index !== -1 && globalQuizData.questions[index]) {
+                    globalQuizData.questions[index].options = [];
+                    globalQuizData.questions[index].correctAnswer = {};
+
+                    // Re-render to clear the UI
+                    renderInteractiveOptions(card.closest('.question-card'), globalQuizData.questions[index], index);
+                }
             }
         }
 
